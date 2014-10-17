@@ -46,13 +46,11 @@ public class Ship {
 	
 	}
 	
-	public void update(float delta, SpriteBatch batch){		
-
+	public void update(float delta, SpriteBatch batch){	
 		rotate();
 		move(delta);
 		
-		sprite.draw(batch);
-		
+		sprite.draw(batch);		
 	}
 	
 	public void move(float delta){
@@ -94,6 +92,18 @@ public class Ship {
 	
 	public void setMoving(boolean moving){
 		this.moving = moving;
+	}
+	
+	public float getCenterX(){
+		return sprite.getX() + sprite.getWidth()/2;
+	}
+	
+	public float getCenterY(){
+		return sprite.getY() + sprite.getHeight()/2;
+	}
+	
+	public float getRotationAngle(){
+		return sprite.getRotation();
 	}
 	
 }

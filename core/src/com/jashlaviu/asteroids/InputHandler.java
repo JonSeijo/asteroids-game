@@ -27,6 +27,10 @@ public class InputHandler implements InputProcessor{
 			ship.setRotationSide(Ship.LEFT);			
 		}
 		
+		if (keycode == Keys.SPACE){
+			game.disparar();
+		}
+		
 		return false;
 	}
 
