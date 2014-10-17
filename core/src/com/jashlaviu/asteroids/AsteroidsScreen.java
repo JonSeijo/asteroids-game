@@ -1,6 +1,7 @@
 package com.jashlaviu.asteroids;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -39,9 +40,19 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	private void updateShoots(float delta, SpriteBatch batch){
-		for(Shoot s : shoots){
-			s.update(delta, batch);
+		
+		for(Shoot sh : shoots){
+			sh.update(delta, batch);
 		}
+		
+		Iterator<Shoot> iter = shoots.iterator();
+		while(iter.hasNext()){			
+			if(iter.next().isDistanceReach()){
+				iter.remove();
+				System.out.println(shoots.size());
+			}
+		}
+
 	}
 	
 	public void disparar(){
@@ -50,6 +61,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void dispose(){
 		ship.dispose();
+		shootTexture.dispose();
 	}
 	
 	public Ship getShip(){
