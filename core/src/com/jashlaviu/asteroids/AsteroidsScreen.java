@@ -15,14 +15,16 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private AsteroidsGame game;
 	private Ship ship;
 	
-	private Texture shootTexture;
+	private Texture shipTexture, shootTexture;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
-		ship = new Ship();
-		
-		shoots = new ArrayList<Shoot>();		
+	
 		shootTexture = new Texture(Gdx.files.internal("shoot.png"));
+		shipTexture = new Texture(Gdx.files.internal("ship.png"));
+		
+		ship = new Ship(shipTexture);		
+		shoots = new ArrayList<Shoot>();	
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 	}
@@ -49,9 +51,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 		while(iter.hasNext()){			
 			if(iter.next().isDistanceReach()){
 				iter.remove();
-				System.out.println(shoots.size());
 			}
 		}
+		
 
 	}
 	
@@ -60,7 +62,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void dispose(){
-		ship.dispose();
+		shipTexture.dispose();
 		shootTexture.dispose();
 	}
 	

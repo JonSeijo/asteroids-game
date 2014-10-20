@@ -2,13 +2,10 @@ package com.jashlaviu.asteroids;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Ship {
+public class Ship extends GameObject{
 	
 	public static final int LEFT = 1;	
 	public static final int RIGHT = -1;
@@ -21,29 +18,21 @@ public class Ship {
 	private boolean moving;
 	private float speed, accel;
 	
-	private Vector2 position, direction, velocity;	
-	private Texture texture;
-	private Sprite sprite;
+	private Vector2  velocity;	
 	
-	
-	
-	public Ship(){
-		texture = new Texture(Gdx.files.internal("ship.png"));
+	public Ship(Texture texture){
+		super(texture);
+		
+		velocity = new Vector2();
 		
 		wWidth = Gdx.graphics.getWidth();
 		wHeight = Gdx.graphics.getHeight();
 		
-		position = new Vector2();
 		position.x = wWidth / 2 + texture.getWidth();
-		position.y = wHeight / 2 + texture.getHeight();	
-		
-		direction = new Vector2();
-		velocity = new Vector2();
-		rotationAmount = 4;
-		
-		sprite = new Sprite(texture);
+		position.y = wHeight / 2 + texture.getHeight();			
 		sprite.setCenter(position.x, position.y);
-	
+		
+		rotationAmount = 4;	
 	}
 	
 	public void update(float delta, SpriteBatch batch){	
@@ -54,17 +43,18 @@ public class Ship {
 	}
 	
 	public void move(float delta){
+		crossScreenUpdate();
+		
 		if(moving){
 			if(accel <= 200) accel += 20;	
 			if(speed <= 300) speed += accel * delta;
 			
-			direction.x = (float)MathUtils.cosDeg(sprite.getRotation());
-			direction.y = (float)MathUtils.sinDeg(sprite.getRotation());
-			direction.nor();
+			updateDirection(sprite.getRotation());
 		}			
 		else{
 			accel = 0;
 			speed *= .98f;
+			if(speed <= 0.1) speed = 0;			
 		}
 			// Gets the facing direction in a vector	
 		velocity.x = calculateVelocity(direction.x, delta);
@@ -80,10 +70,6 @@ public class Ship {
 	
 	public void rotate(){				
 		sprite.rotate(rotationAmount * rotationSide);
-	}
-	
-	public void dispose(){
-		texture.dispose();
 	}
 	
 	public void setRotationSide(int direction){
