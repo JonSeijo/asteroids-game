@@ -20,8 +20,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
 	
-		shootTexture = new Texture(Gdx.files.internal("shoot.png"));
-		shipTexture = new Texture(Gdx.files.internal("ship.png"));
+		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));
+		shipTexture = new Texture(Gdx.files.internal("ship2.png"));
 		
 		ship = new Ship(shipTexture);		
 		shoots = new ArrayList<Shoot>();	

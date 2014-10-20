@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Shoot extends GameObject{
 	
 	private Vector2 initialPosition;	
-	private float distanceLimit;
+	private float distanceLimit, distance;
 
 	public Shoot(Ship ship, Texture texture){
 		super(texture);
@@ -20,12 +20,13 @@ public class Shoot extends GameObject{
 		sprite.setCenter(position.x, position.y);
 		sprite.setRotation(ship.getRotationAngle());
 		
-		speed = 500;
-		distanceLimit = 800;
+		speed = 400;
+		distanceLimit = 100;
 	}
 	
 	public void update(float delta, SpriteBatch batch){
 		crossScreenUpdate();
+		distance++;
 		
 		position.x += direction.x * speed * delta;
 		position.y += direction.y * speed * delta;
@@ -36,7 +37,7 @@ public class Shoot extends GameObject{
 	}
 	
 	public boolean isDistanceReach(){
-		return Math.abs(position.len() - initialPosition.len()) > distanceLimit;	
+		return distance >= distanceLimit;	
 	}
 	
 	public void dispose(){
