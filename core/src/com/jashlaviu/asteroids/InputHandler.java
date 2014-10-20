@@ -15,21 +15,17 @@ public class InputHandler implements InputProcessor{
 	public boolean keyDown(int keycode) {
 		Ship ship = game.getShip();
 		
-		if(keycode == Keys.UP){
+		if(keycode == Keys.UP)
 			ship.setMoving(true);
-		}
 		
-		if(keycode == Keys.RIGHT){	
-			ship.setRotationSide(Ship.RIGHT);			
-		}
+		if(keycode == Keys.RIGHT)
+			ship.setRotationSide(Ship.RIGHT);		
 		
-		if(keycode == Keys.LEFT){
-			ship.setRotationSide(Ship.LEFT);			
-		}
+		if(keycode == Keys.LEFT)
+			ship.setRotationSide(Ship.LEFT);	
 		
-		if (keycode == Keys.SPACE){
-			game.disparar();
-		}
+		if (keycode == Keys.SPACE)
+			game.disparar();		
 		
 		return false;
 	}
@@ -38,10 +34,9 @@ public class InputHandler implements InputProcessor{
 	public boolean keyUp(int keycode) {
 		Ship ship = game.getShip();
 		
-		if(keycode == Keys.UP){
+		if(keycode == Keys.UP)
 			ship.setMoving(false);
-		}
-		
+				
 		if(keycode == Keys.RIGHT)
 			ship.setRotationSide(Ship.NOTHING);	
 		
@@ -53,37 +48,31 @@ public class InputHandler implements InputProcessor{
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

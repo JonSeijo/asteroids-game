@@ -8,12 +8,16 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
+	private long lastShootTime, nextShootTime;
+	
 	private ArrayList<Shoot> shoots;
 	private AsteroidsGame game;
 	private Ship ship;
+	private Gui gui;
 	
 	private Texture shipTexture, shootTexture;
 	
@@ -24,7 +28,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shipTexture = new Texture(Gdx.files.internal("ship2.png"));
 		
 		ship = new Ship(shipTexture);		
-		shoots = new ArrayList<Shoot>();	
+		shoots = new ArrayList<Shoot>();
+		gui = new Gui();
+		
+		lastShootTime = TimeUtils.millis();
+		nextShootTime = 300; //In milliseconds
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 	}
@@ -33,12 +41,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		game.batch.begin();
-		
+		game.batch.begin();		
 		ship.update(delta, game.batch);
-		updateShoots(delta, game.batch);		
-		
-		game.batch.end();
+		updateShoots(delta, game.batch);	
+		gui.update(delta, game.batch);
+		game.batch.end();		
 	}
 	
 	private void updateShoots(float delta, SpriteBatch batch){
@@ -58,7 +65,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void disparar(){
-		shoots.add(new Shoot(ship, shootTexture));
+		if((TimeUtils.timeSinceMillis(lastShootTime)) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
+			shoots.add(new Shoot(ship, shootTexture));
+			lastShootTime = TimeUtils.millis();
+		}
 	}
 	
 	public void dispose(){
