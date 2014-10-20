@@ -29,7 +29,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		ship = new Ship(shipTexture);		
 		shoots = new ArrayList<Shoot>();
-		gui = new Gui();
+		gui = new Gui(this);
 		
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 300; //In milliseconds
@@ -60,12 +60,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 				iter.remove();
 			}
 		}
-		
-
 	}
 	
 	public void disparar(){
-		if((TimeUtils.timeSinceMillis(lastShootTime)) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
+		if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 			shoots.add(new Shoot(ship, shootTexture));
 			lastShootTime = TimeUtils.millis();
 		}
@@ -74,10 +72,23 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void dispose(){
 		shipTexture.dispose();
 		shootTexture.dispose();
+		gui.dispose();
+	}
+	
+	public float getShootTimePerc(){
+		return (float)TimeUtils.timeSinceMillis(lastShootTime) / nextShootTime;		
 	}
 	
 	public Ship getShip(){
 		return ship;
+	}
+
+	public long getLastShootTime() {
+		return lastShootTime;
+	}
+	
+	public float getNextShootTime(){
+		return nextShootTime;
 	}
 	
 }

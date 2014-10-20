@@ -1,8 +1,6 @@
 package com.jashlaviu.asteroids;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AsteroidsGame extends Game {
@@ -17,5 +15,9 @@ public class AsteroidsGame extends Game {
 	@Override
 	public void render () {
 		super.render();
+	}
+	
+	public void dispose(){
+		super.dispose();
 	}
 }
