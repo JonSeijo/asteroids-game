@@ -15,6 +15,9 @@ public class InputHandler implements InputProcessor{
 	public boolean keyDown(int keycode) {
 		Ship ship = game.getShip();
 		
+		if (keycode == Keys.SPACE)
+			game.disparar();	
+		
 		if(keycode == Keys.UP)
 			ship.setMoving(true);
 		
@@ -23,9 +26,6 @@ public class InputHandler implements InputProcessor{
 		
 		if(keycode == Keys.LEFT)
 			ship.setRotationSide(Ship.LEFT);	
-		
-		if (keycode == Keys.SPACE)
-			game.disparar();		
 		
 		return false;
 	}

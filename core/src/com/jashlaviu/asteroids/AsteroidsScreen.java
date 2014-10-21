@@ -12,27 +12,31 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
+	private int nivel;
 	private long lastShootTime, nextShootTime;
-	
+		
 	private ArrayList<Shoot> shoots;
+	private ArrayList<Asteroid> asteroids;
 	private AsteroidsGame game;
 	private Ship ship;
 	private Gui gui;
 	
-	private Texture shipSheet, shootTexture;
+	private Texture shipSheet, shootTexture, asteroidSheet;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
 	
 		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));		
-		shipSheet = new Texture(Gdx.files.internal("shipSheet.png"));	
+		shipSheet = new Texture(Gdx.files.internal("shipSheet.png"));
+		asteroidSheet = new Texture(Gdx.files.internal("asteroidsSheet.png"));
 		
 		ship = new Ship(shipSheet);		
 		shoots = new ArrayList<Shoot>();
+		asteroids = new ArrayList<Asteroid>();
 		gui = new Gui(this);
 		
 		lastShootTime = TimeUtils.millis();
-		nextShootTime = 300; //In milliseconds
+		nextShootTime = 200; //In milliseconds
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 	}
@@ -72,8 +76,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void dispose(){
 		shipSheet.dispose();
 		shootTexture.dispose();
-		gui.dispose();
-		
+		asteroidSheet.dispose();
+		gui.dispose();		
 	}
 	
 	public float getShootTimePerc(){
