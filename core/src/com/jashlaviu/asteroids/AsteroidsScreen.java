@@ -19,15 +19,15 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Ship ship;
 	private Gui gui;
 	
-	private Texture shipTexture, shootTexture;
+	private Texture shipSheet, shootTexture;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
 	
-		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));
-		shipTexture = new Texture(Gdx.files.internal("ship2.png"));
+		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));		
+		shipSheet = new Texture(Gdx.files.internal("shipSheet.png"));	
 		
-		ship = new Ship(shipTexture);		
+		ship = new Ship(shipSheet);		
 		shoots = new ArrayList<Shoot>();
 		gui = new Gui(this);
 		
@@ -42,8 +42,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		game.batch.begin();		
+		updateShoots(delta, game.batch);
 		ship.update(delta, game.batch);
-		updateShoots(delta, game.batch);	
 		gui.update(delta, game.batch);
 		game.batch.end();		
 	}
@@ -70,9 +70,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void dispose(){
-		shipTexture.dispose();
+		shipSheet.dispose();
 		shootTexture.dispose();
 		gui.dispose();
+		
 	}
 	
 	public float getShootTimePerc(){

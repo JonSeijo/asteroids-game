@@ -2,7 +2,9 @@ package com.jashlaviu.asteroids;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Ship extends GameObject{
@@ -18,28 +20,49 @@ public class Ship extends GameObject{
 	private boolean moving;
 	private float speed, accel;
 	
-	private Vector2  velocity;	
+	private Vector2 velocity;	
 	
-	public Ship(Texture texture){
-		super(texture);
+	private Animation shipAnimation;
+	private TextureRegion[] shipAnimationFrames;
+	private TextureRegion normalShipFrame, currentShipFrame;
+	private float shipAnimationTime, stateTime;
+	
+	
+	public Ship(TextureRegion[][] shipSheet){
+		super(shipSheet[0][0]);		
+		normalShipFrame = shipSheet[0][0];
 		
 		velocity = new Vector2();
 		
 		wWidth = Gdx.graphics.getWidth();
 		wHeight = Gdx.graphics.getHeight();
 		
-		position.x = wWidth / 2 + texture.getWidth();
-		position.y = wHeight / 2 + texture.getHeight();			
+		position.x = wWidth / 2 + normalShipFrame.getRegionWidth();
+		position.y = wHeight / 2 + normalShipFrame.getRegionHeight();			
 		sprite.setCenter(position.x, position.y);
 		
+		// Set up fire animation		
+		shipAnimationFrames = new TextureRegion[3];		
+	
+		for(int i = 1; i < 4; i++){
+			shipAnimationFrames[i-1] = shipSheet[i][0];
+		}		
+		shipAnimationTime = 0.25f;
+		shipAnimation = new Animation(shipAnimationTime, shipAnimationFrames);		
+
 		rotationAmount = 4;	
+	}
+	
+	public Ship(Texture shipSheetTexture){
+		this(TextureRegion.split(shipSheetTexture, 48, 16));
 	}
 	
 	public void update(float delta, SpriteBatch batch){	
 		rotate();
 		move(delta);
+		updateAnimation(delta);
 		
-		sprite.draw(batch);		
+		sprite.draw(batch);	
 	}
 	
 	public void move(float delta){
@@ -49,9 +72,11 @@ public class Ship extends GameObject{
 			if(accel <= 200) accel += 20;	
 			if(speed <= 300) speed += accel * delta;
 			
-			updateDirection(sprite.getRotation());
+			sprite.setRegion(currentShipFrame);
+			updateDirection(sprite.getRotation());			
 		}			
 		else{
+			sprite.setRegion(normalShipFrame);
 			accel = 0;
 			speed *= .98f;
 			if(speed <= 0.1) speed = 0;			
@@ -62,6 +87,11 @@ public class Ship extends GameObject{
 		
 		position.add(velocity.x, velocity.y);
 		sprite.setCenter(position.x, position.y);
+	}
+	
+	private void updateAnimation(float delta){
+		stateTime += delta;
+		currentShipFrame = shipAnimation.getKeyFrame(stateTime, true);		
 	}
 	
 	private float calculateVelocity(float direction, float delta){
