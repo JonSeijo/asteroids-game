@@ -44,6 +44,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
+		level = 10;
 		nextLevel();
 	}
 	
@@ -62,8 +63,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private void updateAsteroids(float delta, SpriteBatch batch) {
 		for(Asteroid ast : asteroids){
 			ast.update(delta, batch);
-		}
-		
+		}		
 	}
 	
 	

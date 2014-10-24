@@ -3,6 +3,7 @@ package com.jashlaviu.asteroids;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -47,6 +48,10 @@ public class GameObject {
 			position.y = wHeight + (sprite.getHeight())/2;
 			
 		sprite.setCenter(position.x, position.y);		
+	}
+	
+	public void update(float delta, SpriteBatch batch) {
+		
 	}
 	
 

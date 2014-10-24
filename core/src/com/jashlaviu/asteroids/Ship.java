@@ -69,7 +69,7 @@ public class Ship extends GameObject{
 		crossScreenUpdate();
 		
 		if(moving){
-			if(accel <= 200) accel += 20;	
+			if(accel <= 200) accel += 15;	
 			if(speed <= 300) speed += accel * delta;
 			
 			sprite.setRegion(currentShipFrame);

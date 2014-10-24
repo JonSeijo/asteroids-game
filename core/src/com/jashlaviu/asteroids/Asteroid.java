@@ -4,26 +4,38 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 
-public class Asteroid{
+public class Asteroid extends GameObject{
 	
 	private Animation animation;
-	private Vector2 position;
 	
 	private TextureRegion currentFrame;
 	private float animationTime, stateTime;
 	
-	public Asteroid(TextureRegion[] asteroidsFrames){		
-		animationTime = MathUtils.random(.20f, .50f);		
-		animation = new Animation(0.25f, asteroidsFrames);
-		position = new Vector2(200, 200);	
+	public Asteroid(TextureRegion[] asteroidsFrames){
+		super(asteroidsFrames[0]);
+		animationTime = MathUtils.random(.30f, .60f);		
+		animation = new Animation(animationTime, asteroidsFrames);
+		
+		position.x = (MathUtils.random(2) == 0) ? MathUtils.random(0, 250) : MathUtils.random(550, 750);
+		position.y = (MathUtils.random(2) == 0) ? MathUtils.random(0, 200) : MathUtils.random(400, 600);
+		
+		direction.x = MathUtils.random(-1,1);
+		direction.y = MathUtils.random(-1,1);
+		
+		speed = animationTime * 150;
 	}
 	
 	public void update(float delta, SpriteBatch batch){	
-		stateTime += delta;
+
+		position.x += speed * delta * direction.x;
+		position.y += speed * delta * direction.y;
+		crossScreenUpdate();			
 		
-		batch.draw(animation.getKeyFrame(stateTime, true), position.x, position.y);
+		stateTime += delta;
+		currentFrame = animation.getKeyFrame(stateTime, true);	
+		
+		batch.draw(currentFrame, position.x, position.y);
 	}
 
 	
