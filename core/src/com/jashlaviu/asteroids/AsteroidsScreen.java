@@ -8,11 +8,12 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
-	private int nivel;
+	private int level;
 	private long lastShootTime, nextShootTime;
 		
 	private ArrayList<Shoot> shoots;
@@ -21,14 +22,17 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Ship ship;
 	private Gui gui;
 	
-	private Texture shipSheet, shootTexture, asteroidSheet;
+	private Texture shipSheet, shootTexture, asteroidsSheet;
+	private TextureRegion[] asteroidsFrames;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
 	
 		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));		
 		shipSheet = new Texture(Gdx.files.internal("shipSheet.png"));
-		asteroidSheet = new Texture(Gdx.files.internal("asteroidsSheet.png"));
+		asteroidsSheet = new Texture(Gdx.files.internal("asteroidsSheet.png"));		
+		
+		createAsteroidFrames();		
 		
 		ship = new Ship(shipSheet);		
 		shoots = new ArrayList<Shoot>();
@@ -39,6 +43,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		nextShootTime = 200; //In milliseconds
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
+		
+		nextLevel();
 	}
 	
 	public void render(float delta){
@@ -46,12 +52,27 @@ public class AsteroidsScreen extends ScreenAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		game.batch.begin();		
+		updateAsteroids(delta, game.batch);
 		updateShoots(delta, game.batch);
 		ship.update(delta, game.batch);
 		gui.update(delta, game.batch);
 		game.batch.end();		
 	}
 	
+	private void updateAsteroids(float delta, SpriteBatch batch) {
+		for(Asteroid ast : asteroids){
+			ast.update(delta, batch);
+		}
+		
+	}
+	
+	
+	public void createAsteroids(int amount){
+		for(int i = 0; i < amount; i++){
+			asteroids.add(new Asteroid(asteroidsFrames));
+		}
+	}
+
 	private void updateShoots(float delta, SpriteBatch batch){
 		
 		for(Shoot sh : shoots){
@@ -73,11 +94,26 @@ public class AsteroidsScreen extends ScreenAdapter{
 		}
 	}
 	
+	public void nextLevel(){
+		level++;
+		createAsteroids(level);
+	}
+
+	
 	public void dispose(){
 		shipSheet.dispose();
 		shootTexture.dispose();
-		asteroidSheet.dispose();
+		asteroidsSheet.dispose();
 		gui.dispose();		
+	}	
+
+	private void createAsteroidFrames() {
+		asteroidsFrames = new TextureRegion[4];
+		TextureRegion[][] tmp = TextureRegion.split(asteroidsSheet, 64, 64);
+		int index = 0;
+		for(int i = 0; i < 2; i++)
+			for(int j = 0; j < 2; j++)
+				asteroidsFrames[index++] = tmp[i][j];
 	}
 	
 	public float getShootTimePerc(){
