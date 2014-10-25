@@ -27,6 +27,10 @@ public class Ship extends GameObject{
 	private TextureRegion normalShipFrame, currentShipFrame;
 	private float shipAnimationTime, stateTime;
 	
+	private int lives;
+	private float respawningTime;
+	private boolean isRespawning;
+	
 	
 	public Ship(TextureRegion[][] shipSheet){
 		super(shipSheet[0][0]);		
@@ -37,10 +41,6 @@ public class Ship extends GameObject{
 		wWidth = Gdx.graphics.getWidth();
 		wHeight = Gdx.graphics.getHeight();
 		
-		position.x = wWidth / 2 + normalShipFrame.getRegionWidth();
-		position.y = wHeight / 2 + normalShipFrame.getRegionHeight();			
-		sprite.setCenter(position.x, position.y);
-		
 		// Set up fire animation		
 		shipAnimationFrames = new TextureRegion[3];		
 	
@@ -49,8 +49,12 @@ public class Ship extends GameObject{
 		}		
 		shipAnimationTime = 0.25f;
 		shipAnimation = new Animation(shipAnimationTime, shipAnimationFrames);		
-
-		rotationAmount = 4;	
+		
+		restartShip();
+		rotationAmount = 4;
+		
+		lives = 3;
+		respawningTime = 3f;
 	}
 	
 	public Ship(Texture shipSheetTexture){
@@ -89,6 +93,27 @@ public class Ship extends GameObject{
 		sprite.setCenter(position.x, position.y);
 	}
 	
+
+	public void lostLive() {
+		if(!isRespawning){
+			lives--;
+			restartShip();
+		}
+		
+		if(lives <= 0){
+			System.out.println("game over");
+		}
+		
+	}
+	
+	private void restartShip(){		
+		accel = 0;
+		speed = 0;		
+		position.x = wWidth/2;
+		position.y = wHeight/2;
+		sprite.setCenter(position.x, position.y);	
+	}
+	
 	private void updateAnimation(float delta){
 		stateTime += delta;
 		currentShipFrame = shipAnimation.getKeyFrame(stateTime, true);		
@@ -121,5 +146,5 @@ public class Ship extends GameObject{
 	public float getRotationAngle(){
 		return sprite.getRotation();
 	}
-	
+
 }

@@ -44,13 +44,18 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		level = 10;
+		level = 8;
 		nextLevel();
 	}
 	
 	public void render(float delta){
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		if(asteroidCollision(ship)){
+			System.out.println("SHIP COLISIONO");
+			ship.lostLive();
+		}		
 		
 		game.batch.begin();		
 		updateAsteroids(delta, game.batch);
@@ -69,12 +74,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void createAsteroids(int amount){
 		for(int i = 0; i < amount; i++){
-			asteroids.add(new Asteroid(asteroidsFrames));
+			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_BIG));
 		}
 	}
 
-	private void updateShoots(float delta, SpriteBatch batch){
-		
+	private void updateShoots(float delta, SpriteBatch batch){		
 		for(Shoot sh : shoots){
 			sh.update(delta, batch);
 		}
@@ -85,6 +89,16 @@ public class AsteroidsScreen extends ScreenAdapter{
 				iter.remove();
 			}
 		}
+	}
+	
+	public boolean asteroidCollision(GameObject obj){		
+		Iterator<Asteroid> iter = asteroids.iterator();
+		while(iter.hasNext()){		// Asteroid rectangle  collides with   object rectangle
+			if(iter.next().getBounds().overlaps(obj.sprite.getBoundingRectangle())){
+				return true;
+			}
+		}		
+		return false;
 	}
 	
 	public void disparar(){
