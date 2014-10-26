@@ -22,7 +22,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Ship ship;
 	private Gui gui;
 	
-	private Texture shipSheet, shootTexture, asteroidsSheet;
+	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet;
 	private TextureRegion[] asteroidsFrames;
 	
 	public AsteroidsScreen(AsteroidsGame game){
@@ -30,11 +30,13 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));		
 		shipSheet = new Texture(Gdx.files.internal("shipSheet.png"));
-		asteroidsSheet = new Texture(Gdx.files.internal("asteroidsSheet.png"));		
+		asteroidsSheet = new Texture(Gdx.files.internal("asteroidsSheet.png"));	
+		respAnimationSheet = new Texture(Gdx.files.internal("shipSheetResp.png"));
 		
 		createAsteroidFrames();		
 		
-		ship = new Ship(shipSheet);		
+		ship = new Ship(shipSheet);
+		ship.setRespawnAnimationSheet(respAnimationSheet);
 		shoots = new ArrayList<Shoot>();
 		asteroids = new ArrayList<Asteroid>();
 		gui = new Gui(this);
@@ -53,8 +55,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if(asteroidCollision(ship)){
-			System.out.println("SHIP COLISIONO");
-			ship.lostLive();
+			if(!ship.isRespawning()){
+				ship.lostLive();
+				if(ship.getLives() <= 0){
+					gameOver();
+				}
+			}
 		}		
 		
 		game.batch.begin();		
@@ -94,7 +100,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public boolean asteroidCollision(GameObject obj){		
 		Iterator<Asteroid> iter = asteroids.iterator();
 		while(iter.hasNext()){		// Asteroid rectangle  collides with   object rectangle
-			if(iter.next().getBounds().overlaps(obj.sprite.getBoundingRectangle())){
+			if(iter.next().getBounds().overlaps(obj.getBounds())){
 				return true;
 			}
 		}		
@@ -112,10 +118,15 @@ public class AsteroidsScreen extends ScreenAdapter{
 		level++;
 		createAsteroids(level);
 	}
+	
+	public void gameOver(){
+		System.out.println("game over");
+	}
 
 	
 	public void dispose(){
 		shipSheet.dispose();
+		respAnimationSheet.dispose();
 		shootTexture.dispose();
 		asteroidsSheet.dispose();
 		gui.dispose();		

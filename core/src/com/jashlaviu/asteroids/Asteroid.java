@@ -18,7 +18,7 @@ public class Asteroid extends GameObject{
 	private float animationTime, stateTime;
 
 	private Rectangle trueBounds, bounds;
-	private float scale, boundsDiff;
+	private float boundsDiff;
 	
 	public Asteroid(TextureRegion[] asteroidsFrames, float scale){
 		super(asteroidsFrames[0]);
@@ -34,8 +34,6 @@ public class Asteroid extends GameObject{
 		direction.nor();
 		
 		speed = 50 / animationTime;
-		
-		this.scale = scale;		
 		
 		trueBounds = new Rectangle();
 		setBounds(new Rectangle());
