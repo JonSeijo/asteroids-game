@@ -80,7 +80,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void createAsteroids(int amount){
 		for(int i = 0; i < amount; i++){
-			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_BIG));
+			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_MEDIUM));
 		}
 	}
 
@@ -120,7 +120,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void gameOver(){
-		System.out.println("game over");
+		game.setScreen(new GameOverScreen(this, game));
 	}
 
 	
@@ -141,6 +141,19 @@ public class AsteroidsScreen extends ScreenAdapter{
 				asteroidsFrames[index++] = tmp[i][j];
 	}
 	
+	public void newGame(){
+		resetObjects();
+		
+		level = 0;
+		nextLevel();
+	}
+	
+	private void resetObjects(){
+		asteroids.clear();
+		shoots.clear();	
+		ship.newGame();
+	}
+	
 	public float getShootTimePerc(){
 		return (float)TimeUtils.timeSinceMillis(lastShootTime) / nextShootTime;		
 	}
@@ -157,4 +170,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		return nextShootTime;
 	}
 	
+	public SpriteBatch getBatch(){
+		return game.batch;
+	}
 }
