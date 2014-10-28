@@ -46,7 +46,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		level = 2;
+		level = 0;
 		nextLevel();
 		//newGame();
 	}
@@ -76,7 +76,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void createAsteroids(int amount){
 		for(int i = 0; i < amount; i++){
-			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_MEDIUM));
+			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_BIG));
 		}
 	}
 
@@ -180,6 +180,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 				}
 			}
 		}				
+	}
+	
+	public void show(){
+		newGame();
 	}
 	
 	public float getShootTimePerc(){

@@ -28,11 +28,10 @@ public class GameOverScreen extends ScreenAdapter{
 	public void render(float delta){		
 		timer += delta;
 		
-		if(timer > 1)
-			if(Gdx.input.isKeyJustPressed(Keys.ANY_KEY))
-				game.setScreen(mainScreen);
-		
-		
+		if(timer > 2)
+			if(Gdx.input.isKeyJustPressed(Keys.ANY_KEY)){
+				game.setScreen(mainScreen);			
+			}
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
