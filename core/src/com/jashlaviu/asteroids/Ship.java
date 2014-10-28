@@ -53,8 +53,7 @@ public class Ship extends GameObject{
 		
 		restartShip();
 		rotationAmount = 4;
-		
-		lives = 1;
+		lives = 3;
 	}
 	
 	public Ship(Texture shipSheetTexture){

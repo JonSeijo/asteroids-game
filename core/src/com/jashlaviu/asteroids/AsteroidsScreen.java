@@ -46,29 +46,25 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		level = 8;
+		level = 2;
 		nextLevel();
+		//newGame();
 	}
 	
 	public void render(float delta){
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		if(asteroidCollision(ship)){
-			if(!ship.isRespawning()){
-				ship.lostLive();
-				if(ship.getLives() <= 0){
-					gameOver();
-				}
-			}
-		}		
-		
+
 		game.batch.begin();		
 		updateAsteroids(delta, game.batch);
 		updateShoots(delta, game.batch);
 		ship.update(delta, game.batch);
 		gui.update(delta, game.batch);
 		game.batch.end();		
+		
+		checkGameOver();
+		checkLevelComplete();
+
 	}
 	
 	private void updateAsteroids(float delta, SpriteBatch batch) {
@@ -90,9 +86,24 @@ public class AsteroidsScreen extends ScreenAdapter{
 		}
 		
 		Iterator<Shoot> iter = shoots.iterator();
-		while(iter.hasNext()){			
-			if(iter.next().isDistanceReach()){
+		while(iter.hasNext()){	
+			Shoot shoot = iter.next();
+			if(asteroidCollision(shoot)){
+				destroyAsteroid(shoot);
 				iter.remove();
+			}
+			if(shoot.isDistanceReach()){
+				iter.remove();
+			}
+		}
+	}
+	
+	public void destroyAsteroid(GameObject object){
+		Iterator<Asteroid> asterIter = asteroids.iterator();
+		while(asterIter.hasNext()){
+			Asteroid ast = asterIter.next();
+			if(ast.getBounds().overlaps(object.getBounds())){
+				asterIter.remove();
 			}
 		}
 	}
@@ -152,6 +163,23 @@ public class AsteroidsScreen extends ScreenAdapter{
 		asteroids.clear();
 		shoots.clear();	
 		ship.newGame();
+	}
+	
+	private void checkLevelComplete(){
+		if(asteroids.isEmpty()){
+			nextLevel();
+		}
+	}
+	
+	private void checkGameOver(){
+		if(asteroidCollision(ship)){
+			if(!ship.isRespawning()){
+				ship.lostLive();
+				if(ship.getLives() <= 0){
+					gameOver();
+				}
+			}
+		}				
 	}
 	
 	public float getShootTimePerc(){
