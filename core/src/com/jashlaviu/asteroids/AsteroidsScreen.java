@@ -57,7 +57,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 
 		game.batch.begin();		
 		updateAsteroids(delta, game.batch);
-		updateShoots(delta, game.batch);
+		updateShoots(delta, game.batch); //Handles asteroid destruction
 		ship.update(delta, game.batch);
 		gui.update(delta, game.batch);
 		game.batch.end();		
@@ -113,8 +113,6 @@ public class AsteroidsScreen extends ScreenAdapter{
 			asteroids.add(astTemp);
 		}
 		asteroidsTemporal.clear();
-		
-		System.out.println(asteroids.size());
 	}
 	
 	private void createAsteroidDivision(GameObject asteroid) {		
@@ -167,7 +165,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void nextLevel(){
 		level++;
 		createAsteroids(level);
-		ship.restartShip();
+		System.out.println("\nLEVEL: " + level);
+		ship.restartShip();	
+		System.out.println("\nLIVES: " + ship.getLives());
 	}
 	
 	public void gameOver(){
@@ -193,6 +193,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void newGame(){
+		System.out.println("Starting new game\n\n");
 		resetObjects();
 		
 		level = startLevel;

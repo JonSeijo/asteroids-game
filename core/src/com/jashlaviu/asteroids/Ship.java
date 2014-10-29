@@ -28,7 +28,7 @@ public class Ship extends GameObject{
 	private TextureRegion normalShipFrame, respawnFrameNormal, currentShipFrame;
 	private float shipAnimationTime, stateTime;
 	
-	private int lives;
+	private int lives, maxLives;
 	private float respawningTime;
 	private boolean isRespawning;
 	
@@ -50,10 +50,10 @@ public class Ship extends GameObject{
 		}		
 		shipAnimationTime = 0.25f;
 		shipAnimation = new Animation(shipAnimationTime, shipAnimationFrames);		
-		
-		restartShip();
-		rotationAmount = 4;
-		lives = 3;
+				
+		rotationAmount = 4.5f;
+		maxLives = 3;
+
 	}
 	
 	public Ship(Texture shipSheetTexture){
@@ -83,8 +83,8 @@ public class Ship extends GameObject{
 		crossScreenUpdate();
 		
 		if(moving){
-			if(accel <= 200) accel += 15;	
-			if(speed <= 300) speed += accel * delta;
+			if(accel <= 200) accel += 20;	
+			if(speed <= 350) speed += accel * delta;
 			
 			sprite.setRegion(currentShipFrame);
 			updateDirection(sprite.getRotation());			
@@ -107,8 +107,9 @@ public class Ship extends GameObject{
 	
 
 	public void lostLive() {
-		lives--;
-		restartShip();	
+		lives--;	
+		System.out.println("\nLIVES: " + lives);
+		restartShip();		
 	}
 	
 	public void restartShip(){		
@@ -186,7 +187,7 @@ public class Ship extends GameObject{
 	}
 	
 	public void newGame(){
-		lives = 3;
+		lives = maxLives;
 		restartShip();
 	}
 
