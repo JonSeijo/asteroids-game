@@ -5,12 +5,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class Asteroid extends GameObject{
 	
 	public static final float SIZE_BIG = 2f; 
 	public static final float SIZE_MEDIUM = 1f; 
 	public static final float SIZE_SMALL = 0.5f; 
+	
+	private float scale;
 	
 	private Animation animation;
 	
@@ -20,23 +23,26 @@ public class Asteroid extends GameObject{
 	private Rectangle trueBounds, bounds;
 	private float boundsDiff;
 	
-	public Asteroid(TextureRegion[] asteroidsFrames, float scale){
+	public Asteroid(TextureRegion[] asteroidsFrames, float scale, float directionx, float directiony){
 		super(asteroidsFrames[0]);
-		animationTime = MathUtils.random(.30f, .50f);		
+//		animationTime = MathUtils.random(.30f, .50f);
+		animationTime = .40f;
 		animation = new Animation(animationTime, asteroidsFrames);
 		currentFrame = animation.getKeyFrame(stateTime, true);
 		
-		position.x = (MathUtils.random(2) == 0) ? MathUtils.random(0, 250) : MathUtils.random(550, 750);
-		position.y = (MathUtils.random(2) == 0) ? MathUtils.random(0, 200) : MathUtils.random(400, 600);
+		position.x = (MathUtils.random(2) == 0) ? MathUtils.random(0, 300) : MathUtils.random(400, 750);
+		position.y = (MathUtils.random(2) == 0) ? MathUtils.random(0, 250) : MathUtils.random(400, 600);
 		
-		direction.x = MathUtils.random(-1f,1f);
-		direction.y = MathUtils.random(-1f,1f);
+		direction.x = directionx;
+		direction.y = directiony;
 		direction.nor();
 		
 		speed = 50 / animationTime;
 		
 		trueBounds = new Rectangle();
 		setBounds(new Rectangle());
+		
+		this.scale = scale;
 		
 		trueBounds.width = currentFrame.getRegionWidth() * scale;
 		trueBounds.height = currentFrame.getRegionHeight() * scale;
@@ -47,14 +53,17 @@ public class Asteroid extends GameObject{
 		boundsDiff = (trueBounds.width - getBounds().width)/2;				
 	}
 	
-	public void update(float delta, SpriteBatch batch){	
-		
+	public Asteroid(TextureRegion[] asteroidsFrames, float scale){
+		this(asteroidsFrames, scale, MathUtils.random(-1f,1f), MathUtils.random(-1f,1f));
+	}
+	
+	public void update(float delta, SpriteBatch batch){			
 		position.x += speed * delta * direction.x;
 		position.y += speed * delta * direction.y;
 		
 		updateBounds();
 
-		crossScreenUpdate();		
+		this.crossScreenUpdate();		
 		
 		stateTime += delta;
 		currentFrame = animation.getKeyFrame(stateTime, true);
@@ -93,6 +102,25 @@ public class Asteroid extends GameObject{
 		this.bounds = bounds;
 	}
 
+	public float getScale(){
+		return scale;
+	}
+	public float getAnimationTime(){
+		return animation.getAnimationDuration();
+	}
+	
+	public void setAnimationTime(float time){
+		animation.setFrameDuration(time);
+	}
+	
+	public Vector2 getDirection(){
+		return direction;
+	}
+	
+	public void setDirection(Vector2 direction){
+		this.direction.x = direction.x;
+		this.direction.y = direction.y;
+	}
 	
 	
 }

@@ -9,15 +9,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
-	private int level;
+	private int level, startLevel;
 	private long lastShootTime, nextShootTime;
 		
 	private ArrayList<Shoot> shoots;
-	private ArrayList<Asteroid> asteroids;
+	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
 	private AsteroidsGame game;
 	private Ship ship;
 	private Gui gui;
@@ -39,6 +40,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		ship.setRespawnAnimationSheet(respAnimationSheet);
 		shoots = new ArrayList<Shoot>();
 		asteroids = new ArrayList<Asteroid>();
+		asteroidsTemporal = new ArrayList<Asteroid>();
 		gui = new Gui(this);
 		
 		lastShootTime = TimeUtils.millis();
@@ -46,9 +48,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		level = 0;
-		nextLevel();
-		//newGame();
+		startLevel = 1;		
 	}
 	
 	public void render(float delta){
@@ -103,11 +103,50 @@ public class AsteroidsScreen extends ScreenAdapter{
 		while(asterIter.hasNext()){
 			Asteroid ast = asterIter.next();
 			if(ast.getBounds().overlaps(object.getBounds())){
+				createAsteroidDivision(ast);
 				asterIter.remove();
+				break;
 			}
 		}
+		
+		for(Asteroid astTemp : asteroidsTemporal){
+			asteroids.add(astTemp);
+		}
+		asteroidsTemporal.clear();
+		
+		System.out.println(asteroids.size());
 	}
 	
+	private void createAsteroidDivision(GameObject asteroid) {		
+		float scale = ((Asteroid) asteroid).getScale();		
+		
+		//Only create new asteroids if are NOT small.
+		if(scale != Asteroid.SIZE_SMALL){
+			Vector2 position1 = new Vector2(asteroid.getPosition());
+			Vector2 position2 = new Vector2(asteroid.getPosition());
+			
+			Vector2 direction = ((Asteroid) asteroid).getDirection();
+			
+			 //This excecutes only if asteroid was shoot and if needs to be resized.
+			if(scale == Asteroid.SIZE_BIG) scale = Asteroid.SIZE_MEDIUM;  //If it was big, now it'll be medium
+			else scale = Asteroid.SIZE_SMALL;							//If it was medium, now it'll be small			
+
+			Vector2 direction1 = new Vector2(direction);
+			direction1.rotate(35f);
+			
+			Vector2 direction2 = new Vector2(direction);
+			direction2.rotate(325f);
+			
+			Asteroid asteroid1 = new Asteroid(asteroidsFrames, scale, direction1.x, direction1.y);			
+			asteroid1.setPosition(position1);		
+			asteroidsTemporal.add(asteroid1);
+			
+			Asteroid asteroid2 = new Asteroid(asteroidsFrames, scale, direction2.x, direction2.y);
+			asteroid2.setPosition(position2);		
+			asteroidsTemporal.add(asteroid2);
+		}	
+	}
+
 	public boolean asteroidCollision(GameObject obj){		
 		Iterator<Asteroid> iter = asteroids.iterator();
 		while(iter.hasNext()){		// Asteroid rectangle  collides with   object rectangle
@@ -117,7 +156,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		}		
 		return false;
 	}
-	
+		
 	public void disparar(){
 		if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 			shoots.add(new Shoot(ship, shootTexture));
@@ -128,6 +167,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void nextLevel(){
 		level++;
 		createAsteroids(level);
+		ship.restartShip();
 	}
 	
 	public void gameOver(){
@@ -155,7 +195,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void newGame(){
 		resetObjects();
 		
-		level = 0;
+		level = startLevel;
 		nextLevel();
 	}
 	

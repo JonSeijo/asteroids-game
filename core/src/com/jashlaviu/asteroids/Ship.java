@@ -111,7 +111,7 @@ public class Ship extends GameObject{
 		restartShip();	
 	}
 	
-	private void restartShip(){		
+	public void restartShip(){		
 		accel = 0;
 		speed = 0;		
 		position.x = wWidth/2;

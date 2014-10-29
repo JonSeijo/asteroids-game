@@ -43,5 +43,6 @@ public class GameOverScreen extends ScreenAdapter{
 	public void dispose(){
 		gameOverTexture.dispose();
 	}
+	
 
 }
