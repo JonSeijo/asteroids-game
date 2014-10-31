@@ -1,34 +1,39 @@
 package com.jashlaviu.asteroids;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Asteroid extends GameObject{
+public class Asteroid{
 	
 	public static final float SIZE_BIG = 2f; 
 	public static final float SIZE_MEDIUM = 1f; 
-	public static final float SIZE_SMALL = 0.5f; 
+	public static final float SIZE_SMALL = 0.6f; 
 	
-	private float scale;
+	private float scale, rotation;
 	
-	private Animation animation;
+	private Sprite sprite;
+	private Vector2 position, direction;
+	private int wWidth, wHeight;
+	private float speed;
 	
-	private TextureRegion currentFrame;
-	private float animationTime, stateTime;
-
+	private TextureRegion singleAsteroidRegion;
 	private Rectangle trueBounds, bounds;
-	private float boundsDiff;
 	
 	public Asteroid(TextureRegion[] asteroidsFrames, float scale, float directionx, float directiony){
-		super(asteroidsFrames[0]);
-//		animationTime = MathUtils.random(.30f, .50f);
-		animationTime = .40f;
-		animation = new Animation(animationTime, asteroidsFrames);
-		currentFrame = animation.getKeyFrame(stateTime, true);
+		
+		sprite = new Sprite(asteroidsFrames[0]);		
+		position = new Vector2();
+		direction = new Vector2();
+		
+		wWidth = Gdx.graphics.getWidth();
+		wHeight = Gdx.graphics.getHeight();		
+		singleAsteroidRegion = asteroidsFrames[0];
 		
 		position.x = (MathUtils.random(2) == 0) ? MathUtils.random(0, 300) : MathUtils.random(400, 750);
 		position.y = (MathUtils.random(2) == 0) ? MathUtils.random(0, 250) : MathUtils.random(400, 600);
@@ -37,20 +42,23 @@ public class Asteroid extends GameObject{
 		direction.y = directiony;
 		direction.nor();
 		
-		speed = 50 / animationTime;
+		speed= 200;
 		
 		trueBounds = new Rectangle();
-		setBounds(new Rectangle());
+		bounds = new Rectangle();
 		
 		this.scale = scale;
 		
-		trueBounds.width = currentFrame.getRegionWidth() * scale;
-		trueBounds.height = currentFrame.getRegionHeight() * scale;
+		sprite.setOrigin(32*scale, 32*scale);	
+		sprite.setBounds(position.x, position.y, singleAsteroidRegion.getRegionWidth() * scale, 
+				singleAsteroidRegion.getRegionHeight() * scale);
+			
+		bounds.width = sprite.getBoundingRectangle().width * .70f;
+		bounds.height = sprite.getBoundingRectangle().height * .70f;	
 		
-		getBounds().width = trueBounds.width * .70f;
-		getBounds().height = trueBounds.height * .70f;
-		
-		boundsDiff = (trueBounds.width - getBounds().width)/2;				
+		rotation = 2;
+		sprite.rotate(MathUtils.random(180));
+	
 	}
 	
 	public Asteroid(TextureRegion[] asteroidsFrames, float scale){
@@ -62,21 +70,24 @@ public class Asteroid extends GameObject{
 		position.y += speed * delta * direction.y;
 		
 		updateBounds();
-
-		this.crossScreenUpdate();		
 		
-		stateTime += delta;
-		currentFrame = animation.getKeyFrame(stateTime, true);
+		crossScreenUpdate2();	
 		
-		batch.draw(currentFrame, trueBounds.x, trueBounds.y, trueBounds.width, trueBounds.height);
+		sprite.setCenter(position.x, position.y);	
+		sprite.setOrigin(32*scale, 32*scale);		
+		
+		sprite.rotate(rotation);		
+		sprite.draw(batch);
 	}
 	
 	private void updateBounds(){
-		trueBounds.x = position.x - trueBounds.width / 2;
-		trueBounds.y = position.y - trueBounds.height / 2;
-		
-		getBounds().x = trueBounds.x + boundsDiff;
-		getBounds().y = trueBounds.y + boundsDiff;
+		Vector2 center = new Vector2();
+		sprite.getBoundingRectangle().getCenter(center);
+//		float centery = sprite.getY() + sprite.getBoundingRectangle().height/5;
+//		bounds.x = position.x - boundsDiff;
+		bounds.setCenter(center);
+//		bounds.x = centerx;
+//		bounds.y = centery;
 	}
 
 	public void crossScreenUpdate(){
@@ -93,7 +104,23 @@ public class Asteroid extends GameObject{
 			
 		updateBounds();		
 	}
+	
+	public void crossScreenUpdate2(){
+		if(sprite.getX() > wWidth)
+			position.x = -sprite.getWidth()/2;
+		else if(sprite.getX() + sprite.getWidth() < 0)
+			position.x = wWidth + sprite.getWidth()/2;
+		
 
+		if(sprite.getY() > wHeight)
+			position.y = -sprite.getWidth()/2;
+		else if(sprite.getY() + sprite.getWidth() < 0)
+			position.y = wHeight + (sprite.getHeight())/2;
+			
+		sprite.setCenter(position.x, position.y);		
+	}
+
+	
 	public Rectangle getBounds() {
 		return bounds;
 	}
@@ -105,16 +132,17 @@ public class Asteroid extends GameObject{
 	public float getScale(){
 		return scale;
 	}
-	public float getAnimationTime(){
-		return animation.getAnimationDuration();
-	}
-	
-	public void setAnimationTime(float time){
-		animation.setFrameDuration(time);
-	}
 	
 	public Vector2 getDirection(){
 		return direction;
+	}
+	
+	public Vector2 getPosition(){
+		return position;
+	}
+	
+	public void setPosition(Vector2 newPosition){
+		position.set(newPosition);
 	}
 	
 	public void setDirection(Vector2 direction){
@@ -122,5 +150,8 @@ public class Asteroid extends GameObject{
 		this.direction.y = direction.y;
 	}
 	
+	public Rectangle getRect(){
+		return sprite.getBoundingRectangle();
+	}
 	
 }

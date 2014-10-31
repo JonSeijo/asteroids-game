@@ -9,12 +9,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
-	private int level, startLevel;
+	private int level, startLevel, startingAsteroids;
 	private long lastShootTime, nextShootTime;
 		
 	private ArrayList<Shoot> shoots;
@@ -23,18 +24,23 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Ship ship;
 	private Gui gui;
 	
-	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet;
-	private TextureRegion[] asteroidsFrames;
+	private ShapeRenderer shapeRender;	
+	
+	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet, singleAsteroidTexture;
+//	private TextureRegion singleAsteroidRegion;
+	private TextureRegion[] asteroidsFrames, singleAsteroidRegion;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
 	
-		shootTexture = new Texture(Gdx.files.internal("shoot2.png"));		
+		shootTexture = new Texture(Gdx.files.internal("shoot.png"));		
 		shipSheet = new Texture(Gdx.files.internal("shipSheet.png"));
-		asteroidsSheet = new Texture(Gdx.files.internal("asteroidsSheet.png"));	
 		respAnimationSheet = new Texture(Gdx.files.internal("shipSheetResp.png"));
+		singleAsteroidTexture = new Texture(Gdx.files.internal("singleAsteroid.png"));
 		
-		createAsteroidFrames();		
+//		createAsteroidFrames();
+		singleAsteroidRegion = new TextureRegion[1];
+		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
 		
 		ship = new Ship(shipSheet);
 		ship.setRespawnAnimationSheet(respAnimationSheet);
@@ -43,17 +49,20 @@ public class AsteroidsScreen extends ScreenAdapter{
 		asteroidsTemporal = new ArrayList<Asteroid>();
 		gui = new Gui(this);
 		
+		shapeRender = new ShapeRenderer();
+		
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 200; //In milliseconds
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		startLevel = 1;		
+		startLevel = 0;	
+		startingAsteroids = 3;
 	}
 	
 	public void render(float delta){
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(35/255f, 55/255f, 105/255f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);		
 
 		game.batch.begin();		
 		updateAsteroids(delta, game.batch);
@@ -61,7 +70,18 @@ public class AsteroidsScreen extends ScreenAdapter{
 		ship.update(delta, game.batch);
 		gui.update(delta, game.batch);
 		game.batch.end();		
-		
+		/*
+		shapeRender.begin(ShapeRenderer.ShapeType.Line);		
+		shapeRender.setColor(0,0,0,1);		
+		for(Asteroid ast : asteroids){
+			shapeRender.rect(ast.getRect().x, ast.getRect().y, ast.getRect().width, ast.getRect().height);
+		}
+		shapeRender.setColor(0,0,1,1);		
+		for(Asteroid ast : asteroids){
+			shapeRender.rect(ast.getBounds().x, ast.getBounds().y, ast.getBounds().width, ast.getBounds().height);
+		}		
+		shapeRender.end();
+		*/
 		checkGameOver();
 		checkLevelComplete();
 
@@ -75,8 +95,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	
 	public void createAsteroids(int amount){
-		for(int i = 0; i < amount; i++){
-			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_BIG));
+		for(int i = 0; i < amount + startingAsteroids; i++){
+//			asteroids.add(new Asteroid(asteroidsFrames, Asteroid.SIZE_BIG));
+			asteroids.add(new Asteroid(singleAsteroidRegion, Asteroid.SIZE_BIG));
 		}
 	}
 
@@ -92,7 +113,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 				destroyAsteroid(shoot);
 				iter.remove();
 			}
-			if(shoot.isDistanceReach()){
+			else if(shoot.isDistanceReach()){
 				iter.remove();
 			}
 		}
@@ -115,15 +136,15 @@ public class AsteroidsScreen extends ScreenAdapter{
 		asteroidsTemporal.clear();
 	}
 	
-	private void createAsteroidDivision(GameObject asteroid) {		
-		float scale = ((Asteroid) asteroid).getScale();		
+	private void createAsteroidDivision(Asteroid asteroid) {		
+		float scale = asteroid.getScale();		
 		
 		//Only create new asteroids if are NOT small.
 		if(scale != Asteroid.SIZE_SMALL){
 			Vector2 position1 = new Vector2(asteroid.getPosition());
 			Vector2 position2 = new Vector2(asteroid.getPosition());
 			
-			Vector2 direction = ((Asteroid) asteroid).getDirection();
+			Vector2 direction = asteroid.getDirection();
 			
 			 //This excecutes only if asteroid was shoot and if needs to be resized.
 			if(scale == Asteroid.SIZE_BIG) scale = Asteroid.SIZE_MEDIUM;  //If it was big, now it'll be medium
@@ -135,11 +156,13 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Vector2 direction2 = new Vector2(direction);
 			direction2.rotate(325f);
 			
-			Asteroid asteroid1 = new Asteroid(asteroidsFrames, scale, direction1.x, direction1.y);			
+//			Asteroid asteroid1 = new Asteroid(asteroidsFrames, scale, direction1.x, direction1.y);	
+			Asteroid asteroid1 = new Asteroid(singleAsteroidRegion, scale, direction1.x, direction1.y);	
 			asteroid1.setPosition(position1);		
 			asteroidsTemporal.add(asteroid1);
 			
-			Asteroid asteroid2 = new Asteroid(asteroidsFrames, scale, direction2.x, direction2.y);
+//			Asteroid asteroid2 = new Asteroid(asteroidsFrames, scale, direction2.x, direction2.y);
+			Asteroid asteroid2 = new Asteroid(singleAsteroidRegion, scale, direction2.x, direction2.y);
 			asteroid2.setPosition(position2);		
 			asteroidsTemporal.add(asteroid2);
 		}	
@@ -184,11 +207,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}	
 
 	private void createAsteroidFrames() {
-		asteroidsFrames = new TextureRegion[4];
+		asteroidsFrames = new TextureRegion[8];
 		TextureRegion[][] tmp = TextureRegion.split(asteroidsSheet, 64, 64);
 		int index = 0;
 		for(int i = 0; i < 2; i++)
-			for(int j = 0; j < 2; j++)
+			for(int j = 0; j < 4; j++)
 				asteroidsFrames[index++] = tmp[i][j];
 	}
 	
