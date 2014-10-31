@@ -1,7 +1,6 @@
 package com.jashlaviu.asteroids;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,7 +22,7 @@ public class Asteroid{
 	private float speed;
 	
 	private TextureRegion singleAsteroidRegion;
-	private Rectangle trueBounds, bounds;
+	private Rectangle bounds;
 	
 	public Asteroid(TextureRegion[] asteroidsFrames, float scale, float directionx, float directiony){
 		
@@ -44,7 +43,6 @@ public class Asteroid{
 		
 		speed= 200;
 		
-		trueBounds = new Rectangle();
 		bounds = new Rectangle();
 		
 		this.scale = scale;

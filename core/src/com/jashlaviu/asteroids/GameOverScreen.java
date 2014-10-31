@@ -22,7 +22,7 @@ public class GameOverScreen extends ScreenAdapter{
 		this.mainScreen = mainScreen;
 		batch = game.batch;
 		
-		gameOverTexture = new Texture(Gdx.files.internal("gameOver.png"));
+		gameOverTexture = new Texture(Gdx.files.internal("data/graphic/gameOver.png"));
 	}
 	
 	public void render(float delta){		

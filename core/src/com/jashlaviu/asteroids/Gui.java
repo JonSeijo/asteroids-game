@@ -14,7 +14,7 @@ public class Gui {
 	public Gui(AsteroidsScreen game){
 		this.game = game;
 		
-		shootTimer = new Texture(Gdx.files.internal("gui_shootTimer1.png"));
+		shootTimer = new Texture(Gdx.files.internal("data/graphic/gui_shootTimer1.png"));
 		shootTimerLen = shootTimerWidth = shootTimer.getWidth();		
 	}
 	
