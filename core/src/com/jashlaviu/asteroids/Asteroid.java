@@ -83,26 +83,7 @@ public class Asteroid{
 	private void updateBounds(){
 		Vector2 center = new Vector2();
 		sprite.getBoundingRectangle().getCenter(center);
-//		float centery = sprite.getY() + sprite.getBoundingRectangle().height/5;
-//		bounds.x = position.x - boundsDiff;
 		bounds.setCenter(center);
-//		bounds.x = centerx;
-//		bounds.y = centery;
-	}
-
-	public void crossScreenUpdate(){
-		if(trueBounds.x > wWidth)
-			position.x = -trueBounds.width/2;
-		else if(trueBounds.x + trueBounds.width < 0)
-			position.x = wWidth + trueBounds.width/2;
-		
-
-		if(trueBounds.y > wHeight)
-			position.y = -trueBounds.height/2;
-		else if(trueBounds.y + trueBounds.height < 0)
-			position.y = wHeight + (trueBounds.height)/2;
-			
-		updateBounds();		
 	}
 	
 	public void crossScreenUpdate2(){
