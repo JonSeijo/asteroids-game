@@ -62,11 +62,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		startLevel = 3;	
+		startLevel = 0;	
 		startingAsteroids = 3;
 		
-		//score = -100;
-		score = 400;
+		score = -100;
 	}
 	
 	public void render(float delta){
@@ -189,10 +188,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		level++;
 		score += 100;
 		createAsteroids(level);
-		System.out.println("\nLEVEL: " + level);
 		ship.addLife();
 		ship.restartShip();	
-		System.out.println("\nLIVES: " + ship.getLives());
 		
 		levelSound.play();
 	}
