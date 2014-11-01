@@ -56,7 +56,7 @@ public class Ship extends GameObject{
 		accelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/accel.wav"));
 		
 		rotationAmount = 4.5f;
-		maxLives = 3;
+		maxLives = 5;
 	}
 	
 	public Ship(Texture shipSheetTexture){
@@ -88,7 +88,7 @@ public class Ship extends GameObject{
 		if(moving){
 			//accelSound.loop(0.2f);
 			accelSound.play(0.2f);
-			if(accel <= 200) accel += 20;	
+			if(accel <= 200) accel += 40;	
 			if(speed <= 350) speed += accel * delta;
 			
 			sprite.setRegion(currentShipFrame);

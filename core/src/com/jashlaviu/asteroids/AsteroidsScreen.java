@@ -58,7 +58,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
 		startLevel = 0;	
-		startingAsteroids = 2;
+		startingAsteroids = 3;
 	}
 	
 	public void render(float delta){
@@ -257,5 +257,13 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public SpriteBatch getBatch(){
 		return game.batch;
+	}
+	
+	public int getLives(){
+		return ship.getLives();
+	}
+	
+	public int getLevel(){
+		return level;
 	}
 }

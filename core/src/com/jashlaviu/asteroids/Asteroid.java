@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Asteroid{
 	
-	public static final float SIZE_BIG = 2f; 
+	public static final float SIZE_BIG = 2.2f; 
 	public static final float SIZE_MEDIUM = 1f; 
 	public static final float SIZE_SMALL = 0.6f; 
 	
@@ -33,15 +33,16 @@ public class Asteroid{
 		wWidth = Gdx.graphics.getWidth();
 		wHeight = Gdx.graphics.getHeight();		
 		singleAsteroidRegion = asteroidsFrames[0];
-		
-		position.x = (MathUtils.random(2) == 0) ? MathUtils.random(0, 300) : MathUtils.random(400, 750);
-		position.y = (MathUtils.random(2) == 0) ? MathUtils.random(0, 250) : MathUtils.random(400, 600);
+
+		position.x = MathUtils.random(0, 790);
+		position.y = MathUtils.random(0, 590);
 		
 		direction.x = directionx;
 		direction.y = directiony;
 		direction.nor();
 		
-		speed= 200;
+		//speed= 210;
+		speed = MathUtils.random(150, 200);
 		
 		bounds = new Rectangle();
 		
