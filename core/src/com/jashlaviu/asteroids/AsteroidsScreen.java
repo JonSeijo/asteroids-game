@@ -16,6 +16,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 
 	private int level, startLevel, startingAsteroids;
 	private long lastShootTime, nextShootTime, score;
+	private float generalVolume;
 		
 	private ArrayList<Shoot> shoots;
 	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
@@ -34,7 +35,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		this.game = game;		
 	
 		shootTexture = new Texture(Gdx.files.internal("data/graphic/shoot.png"));		
-		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet.png"));
+		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet2.png"));
 		protectionTexture = new Texture(Gdx.files.internal("data/graphic/protection.png"));
 		singleAsteroidTexture = new Texture(Gdx.files.internal("data/graphic/singleAsteroid.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
@@ -64,6 +65,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		startingAsteroids = 3;
 		
 		score = -100;
+		generalVolume = 0.1f;
+		
 	}
 	
 	public void render(float delta){
@@ -93,7 +96,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Shoot shoot = iter.next();
 			if(asteroidCollision(shoot)){
 				destroyAsteroid(shoot);
-				explosionSound.play();
+				explosionSound.play(generalVolume);
 				score += 10;
 				iter.remove();
 			}
@@ -164,7 +167,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 			shoots.add(new Shoot(ship, shootTexture));			
 			lastShootTime = TimeUtils.millis();
-			shootSound.play();
+			shootSound.play(generalVolume);
 		}
 	}
 	
@@ -184,12 +187,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void nextLevel(){
 		level++;
-		score += 100;
+		score += level*100;
 		createAsteroids(level);
 		ship.addLife();
 		ship.restartShip();	
 		
-		levelSound.play();
+		levelSound.play(generalVolume);
 	}
 	
 	public void gameOver(){
@@ -235,7 +238,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private void checkGameOver(){
 		if(asteroidCollision(ship)){
 			if(!ship.isRespawning()){
-				dieSound.play();
+				dieSound.play(generalVolume);
 				ship.lostLive();
 				if(ship.getLives() <= 0){
 					gameOver();
@@ -280,4 +283,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		return score;
 	}
 		
+	public float getGeneralVolume(){
+		return generalVolume;
+	}
+	
 }

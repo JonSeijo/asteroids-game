@@ -94,7 +94,7 @@ public class Ship extends GameObject{
 		crossScreenUpdate();
 		
 		if(moving){
-			accelSound.play(0.3f);
+			accelSound.play(0.1f);
 			if(accel <= 200) accel += 40;	
 			if(speed <= 350) speed += accel * delta;
 			

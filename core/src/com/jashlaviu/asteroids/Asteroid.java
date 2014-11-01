@@ -52,8 +52,8 @@ public class Asteroid{
 		sprite.setBounds(position.x, position.y, singleAsteroidRegion.getRegionWidth() * scale, 
 				singleAsteroidRegion.getRegionHeight() * scale);
 			
-		bounds.width = sprite.getBoundingRectangle().width * .70f;
-		bounds.height = sprite.getBoundingRectangle().height * .70f;	
+		bounds.width = sprite.getBoundingRectangle().width * .80f;
+		bounds.height = sprite.getBoundingRectangle().height * .80f;	
 		
 		rotation = 2;
 		sprite.rotate(MathUtils.random(180));

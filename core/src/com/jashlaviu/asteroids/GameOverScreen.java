@@ -5,23 +5,29 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameOverScreen extends ScreenAdapter{
 
 	private float timer;
+	private long score;
 	
 	private Texture gameOverTexture;	
 	private AsteroidsGame game;
 	private AsteroidsScreen mainScreen;
+	private BitmapFont font;
 	private SpriteBatch batch;
 	
 	public GameOverScreen(AsteroidsScreen mainScreen, AsteroidsGame game) {
-		System.out.println("\n\nGame over\n\n");		
+		System.out.println("\nGame over\n");		
 		this.game = game;	
-		this.mainScreen = mainScreen;
+		this.mainScreen = mainScreen;		
 		batch = game.batch;
 		
+		font = new BitmapFont();
+		
+		score = mainScreen.getScore();		
 		gameOverTexture = new Texture(Gdx.files.internal("data/graphic/gameOver.png"));
 	}
 	
@@ -36,7 +42,11 @@ public class GameOverScreen extends ScreenAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();		
-		batch.draw(gameOverTexture, 70, 300);		
+		batch.draw(gameOverTexture, 70, 300);
+		
+		font.setColor(0, 0, 0, 1);	
+		font.draw(batch, "Score: \n" + Long.toString(score), 380, 100);
+		
 		batch.end();		
 	}
 	
