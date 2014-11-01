@@ -6,7 +6,6 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,8 +24,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Gui gui;
 	private Background background;
 	
-	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet;
-	private Texture starBack, singleAsteroidTexture;
+	private Texture shipSheet, shootTexture, asteroidsSheet;
+	private Texture starBack, singleAsteroidTexture, protectionTexture;
 	private TextureRegion[] singleAsteroidRegion;
 	
 	private Sound shootSound, explosionSound, dieSound, levelSound;
@@ -36,10 +35,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 		shootTexture = new Texture(Gdx.files.internal("data/graphic/shoot.png"));		
 		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet.png"));
-		respAnimationSheet = new Texture(Gdx.files.internal("data/graphic/shipSheetResp.png"));
+		protectionTexture = new Texture(Gdx.files.internal("data/graphic/protection.png"));
 		singleAsteroidTexture = new Texture(Gdx.files.internal("data/graphic/singleAsteroid.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
-
+		
 		singleAsteroidRegion = new TextureRegion[1];
 		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
 		
@@ -48,8 +47,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
 		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));	
 		
-		ship = new Ship(shipSheet);
-		ship.setRespawnAnimationSheet(respAnimationSheet);
+		ship = new Ship(shipSheet, protectionTexture);		
 		shoots = new ArrayList<Shoot>();
 		asteroids = new ArrayList<Asteroid>();
 		asteroidsTemporal = new ArrayList<Asteroid>();
@@ -201,12 +199,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void dispose(){
 		shipSheet.dispose();
-		respAnimationSheet.dispose();
+		protectionTexture.dispose();
 		shootTexture.dispose();
 		asteroidsSheet.dispose();
 		gui.dispose();		
 		starBack.dispose();
-		
+				
 		shootSound.dispose();
 		dieSound.dispose();
 		levelSound.dispose();
@@ -281,4 +279,5 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public long getScore(){
 		return score;
 	}
+		
 }

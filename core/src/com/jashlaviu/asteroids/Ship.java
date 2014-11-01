@@ -24,9 +24,10 @@ public class Ship extends GameObject{
 	
 	private Vector2 velocity;	
 	
-	private Animation shipAnimation, respawnAnimation;
-	private TextureRegion[] shipAnimationFrames, shipRespawnFrames;
-	private TextureRegion normalShipFrame, respawnFrameNormal, currentShipFrame;
+	private Animation shipAnimation;
+	private Texture protectionTex;
+	private TextureRegion[] shipAnimationFrames;
+	private TextureRegion normalShipFrame, currentShipFrame;
 	private float shipAnimationTime, stateTime;
 	
 	private int lives, initialLives;
@@ -35,7 +36,7 @@ public class Ship extends GameObject{
 	
 	private Sound accelSound;	
 	
-	public Ship(TextureRegion[][] shipSheet){
+	public Ship(TextureRegion[][] shipSheet, Texture protectionTex){
 		super(shipSheet[0][0]);		
 		normalShipFrame = shipSheet[0][0];
 		
@@ -55,12 +56,16 @@ public class Ship extends GameObject{
 				
 		accelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/accel.wav"));
 		
+		this.protectionTex = protectionTex;
+	
 		rotationAmount = 4.5f;
 		initialLives = 4;
+		
+		sprite.setOrigin(32, 8);
 	}
 	
-	public Ship(Texture shipSheetTexture){
-		this(TextureRegion.split(shipSheetTexture, 48, 16));
+	public Ship(Texture shipSheetTexture, Texture protectionTexture){
+		this(TextureRegion.split(shipSheetTexture, 48, 16), protectionTexture);
 	}
 	
 	public void update(float delta, SpriteBatch batch){
@@ -68,6 +73,9 @@ public class Ship extends GameObject{
 		rotate();
 		move(delta);
 		updateAnimation(delta);
+		
+		if(isRespawning)			
+			batch.draw(protectionTex, position.x - 24, position.y - 32);	
 		
 		sprite.draw(batch);	
 	}
@@ -95,8 +103,7 @@ public class Ship extends GameObject{
 		}			
 		else{
 			accelSound.stop();
-			if(isRespawning()) sprite.setRegion(respawnFrameNormal);
-			else sprite.setRegion(normalShipFrame);
+			sprite.setRegion(normalShipFrame);
 			
 			accel = 0;
 			speed *= .98f;
@@ -112,8 +119,7 @@ public class Ship extends GameObject{
 	
 
 	public void lostLive() {
-		lives--;	
-		System.out.println("\nLIVES: " + lives);
+		lives--;
 		restartShip();		
 	}
 	
@@ -128,10 +134,7 @@ public class Ship extends GameObject{
 	
 	private void updateAnimation(float delta){
 		stateTime += delta;
-		if(isRespawning())
-			currentShipFrame = respawnAnimation.getKeyFrame(stateTime, true);	
-		else
-			currentShipFrame = shipAnimation.getKeyFrame(stateTime, true);		
+		currentShipFrame = shipAnimation.getKeyFrame(stateTime, true);		
 	}
 	
 	public Rectangle getBounds(){
@@ -173,18 +176,6 @@ public class Ship extends GameObject{
 	
 	public float getRotationAngle(){
 		return sprite.getRotation();
-	}
-	
-	public void setRespawnAnimationSheet(Texture respAnimationSheet){
-		TextureRegion[][] tmp = TextureRegion.split(respAnimationSheet, 48, 16);
-		shipRespawnFrames = new TextureRegion[3];		
-		
-		for(int i = 1; i < 4; i++){
-			shipRespawnFrames[i-1] = tmp[i][0];
-		}
-		
-		respawnFrameNormal = tmp[0][0];
-		respawnAnimation = new Animation(shipAnimationTime, shipRespawnFrames);		
 	}
 	
 	public int getLives(){
