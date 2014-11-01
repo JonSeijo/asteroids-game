@@ -23,8 +23,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private AsteroidsGame game;
 	private Ship ship;
 	private Gui gui;
+	private Background background;
 	
-	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet, singleAsteroidTexture;
+	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet;
+	private Texture starBack, singleAsteroidTexture;
 	private TextureRegion[] singleAsteroidRegion;
 	
 	private Sound shootSound, explosionSound, dieSound, levelSound;
@@ -36,6 +38,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet.png"));
 		respAnimationSheet = new Texture(Gdx.files.internal("data/graphic/shipSheetResp.png"));
 		singleAsteroidTexture = new Texture(Gdx.files.internal("data/graphic/singleAsteroid.png"));
+		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
 
 		singleAsteroidRegion = new TextureRegion[1];
 		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
@@ -43,8 +46,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot3.wav"));
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion1.wav"));
 		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
-		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
-	
+		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));	
 		
 		ship = new Ship(shipSheet);
 		ship.setRespawnAnimationSheet(respAnimationSheet);
@@ -52,46 +54,37 @@ public class AsteroidsScreen extends ScreenAdapter{
 		asteroids = new ArrayList<Asteroid>();
 		asteroidsTemporal = new ArrayList<Asteroid>();
 		gui = new Gui(this);
+		
+		background = new Background(starBack);
 
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 200; //In milliseconds
 		
 		Gdx.input.setInputProcessor(new InputHandler(this));
 		
-		startLevel = 0;	
+		startLevel = 3;	
 		startingAsteroids = 3;
 		
-		score = -100;
+		//score = -100;
+		score = 400;
 	}
 	
 	public void render(float delta){
-//		Gdx.gl.glClearColor(35/255f, 55/255f, 105/255f, 1);
-		Gdx.gl.glClearColor(0/255f, 0/255f, 10/255f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);		
-
+		
 		game.batch.begin();		
+		
+		background.update(delta, game.batch);
 		updateAsteroids(delta, game.batch);
 		updateShoots(delta, game.batch); //Handles asteroid destruction
 		ship.update(delta, game.batch);
-		gui.update(delta, game.batch);
+		gui.update(delta, game.batch);		
+		
 		game.batch.end();	
 		
 		checkGameOver();
 		checkLevelComplete();
 	}
 	
-	private void updateAsteroids(float delta, SpriteBatch batch) {
-		for(Asteroid ast : asteroids){
-			ast.update(delta, batch);
-		}		
-	}
-	
-	
-	public void createAsteroids(int amount){
-		for(int i = 0; i < amount + startingAsteroids; i++){
-			asteroids.add(new Asteroid(singleAsteroidRegion, Asteroid.SIZE_BIG));
-		}
-	}
 
 	private void updateShoots(float delta, SpriteBatch batch){		
 		for(Shoot sh : shoots){
@@ -178,6 +171,20 @@ public class AsteroidsScreen extends ScreenAdapter{
 		}
 	}
 	
+	private void updateAsteroids(float delta, SpriteBatch batch) {
+		for(Asteroid ast : asteroids){
+			ast.update(delta, batch);
+		}		
+	}
+	
+	
+	public void createAsteroids(int amount){
+		for(int i = 0; i < amount + startingAsteroids; i++){
+			asteroids.add(new Asteroid(singleAsteroidRegion, Asteroid.SIZE_BIG));
+		}
+	}
+
+	
 	public void nextLevel(){
 		level++;
 		score += 100;
@@ -201,6 +208,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shootTexture.dispose();
 		asteroidsSheet.dispose();
 		gui.dispose();		
+		starBack.dispose();
 		
 		shootSound.dispose();
 		dieSound.dispose();
