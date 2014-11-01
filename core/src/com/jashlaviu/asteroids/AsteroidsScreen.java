@@ -40,10 +40,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 		singleAsteroidRegion = new TextureRegion[1];
 		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
 		
-		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot1.wav"));
-		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion2.wav"));
-		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die1.wav"));
+		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot3.wav"));
+		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion1.wav"));
+		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
 		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
+	
 		
 		ship = new Ship(shipSheet);
 		ship.setRespawnAnimationSheet(respAnimationSheet);
@@ -178,6 +179,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		level++;
 		createAsteroids(level);
 		System.out.println("\nLEVEL: " + level);
+		ship.addLife();
 		ship.restartShip();	
 		System.out.println("\nLIVES: " + ship.getLives());
 		

@@ -29,7 +29,7 @@ public class Ship extends GameObject{
 	private TextureRegion normalShipFrame, respawnFrameNormal, currentShipFrame;
 	private float shipAnimationTime, stateTime;
 	
-	private int lives, maxLives;
+	private int lives, initialLives;
 	private float respawningTime;
 	private boolean isRespawning;
 	
@@ -56,7 +56,7 @@ public class Ship extends GameObject{
 		accelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/accel.wav"));
 		
 		rotationAmount = 4.5f;
-		maxLives = 5;
+		initialLives = 4;
 	}
 	
 	public Ship(Texture shipSheetTexture){
@@ -86,8 +86,7 @@ public class Ship extends GameObject{
 		crossScreenUpdate();
 		
 		if(moving){
-			//accelSound.loop(0.2f);
-			accelSound.play(0.2f);
+			accelSound.play(0.3f);
 			if(accel <= 200) accel += 40;	
 			if(speed <= 350) speed += accel * delta;
 			
@@ -193,12 +192,16 @@ public class Ship extends GameObject{
 	}
 	
 	public void newGame(){
-		lives = maxLives;
+		lives = initialLives;
 		restartShip();
 	}
 	
 	public void dispose(){
 		accelSound.dispose();
+	}
+	
+	public void addLife(){
+		lives++;
 	}
 
 }
