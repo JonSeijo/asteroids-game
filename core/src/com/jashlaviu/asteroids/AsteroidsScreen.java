@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +27,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Texture shipSheet, respAnimationSheet, shootTexture, asteroidsSheet, singleAsteroidTexture;
 	private TextureRegion[] singleAsteroidRegion;
 	
+	private Sound shootSound, explosionSound, dieSound, levelSound;
+	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
 	
@@ -36,6 +39,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 
 		singleAsteroidRegion = new TextureRegion[1];
 		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
+		
+		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot1.wav"));
+		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion2.wav"));
+		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die1.wav"));
+		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
 		
 		ship = new Ship(shipSheet);
 		ship.setRespawnAnimationSheet(respAnimationSheet);
@@ -92,6 +100,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Shoot shoot = iter.next();
 			if(asteroidCollision(shoot)){
 				destroyAsteroid(shoot);
+				explosionSound.play();
 				iter.remove();
 			}
 			else if(shoot.isDistanceReach()){
@@ -132,10 +141,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 			else scale = Asteroid.SIZE_SMALL;							//If it was medium, now it'll be small			
 
 			Vector2 direction1 = new Vector2(direction);
-			direction1.rotate(35f);
+			direction1.rotate(25f);
 			
 			Vector2 direction2 = new Vector2(direction);
-			direction2.rotate(325f);
+			direction2.rotate(335f);
 				
 			Asteroid asteroid1 = new Asteroid(singleAsteroidRegion, scale, direction1.x, direction1.y);	
 			asteroid1.setPosition(position1);		
@@ -159,8 +168,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 	public void disparar(){
 		if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
-			shoots.add(new Shoot(ship, shootTexture));
+			shoots.add(new Shoot(ship, shootTexture));			
 			lastShootTime = TimeUtils.millis();
+			shootSound.play();
 		}
 	}
 	
@@ -170,6 +180,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		System.out.println("\nLEVEL: " + level);
 		ship.restartShip();	
 		System.out.println("\nLIVES: " + ship.getLives());
+		
+		levelSound.play();
 	}
 	
 	public void gameOver(){
@@ -183,6 +195,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shootTexture.dispose();
 		asteroidsSheet.dispose();
 		gui.dispose();		
+		
+		shootSound.dispose();
+		dieSound.dispose();
+		levelSound.dispose();
+		explosionSound.dispose();
+		ship.dispose();
 	}	
 	
 	public void newGame(){
@@ -208,6 +226,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private void checkGameOver(){
 		if(asteroidCollision(ship)){
 			if(!ship.isRespawning()){
+				dieSound.play();
 				ship.lostLive();
 				if(ship.getLives() <= 0){
 					gameOver();

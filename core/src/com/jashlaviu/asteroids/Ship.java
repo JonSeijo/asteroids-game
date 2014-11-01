@@ -1,6 +1,7 @@
 package com.jashlaviu.asteroids;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +33,7 @@ public class Ship extends GameObject{
 	private float respawningTime;
 	private boolean isRespawning;
 	
+	private Sound accelSound;	
 	
 	public Ship(TextureRegion[][] shipSheet){
 		super(shipSheet[0][0]);		
@@ -51,9 +53,10 @@ public class Ship extends GameObject{
 		shipAnimationTime = 0.25f;
 		shipAnimation = new Animation(shipAnimationTime, shipAnimationFrames);		
 				
+		accelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/accel.wav"));
+		
 		rotationAmount = 4.5f;
 		maxLives = 3;
-
 	}
 	
 	public Ship(Texture shipSheetTexture){
@@ -83,13 +86,16 @@ public class Ship extends GameObject{
 		crossScreenUpdate();
 		
 		if(moving){
+			//accelSound.loop(0.2f);
+			accelSound.play(0.2f);
 			if(accel <= 200) accel += 20;	
 			if(speed <= 350) speed += accel * delta;
 			
 			sprite.setRegion(currentShipFrame);
-			updateDirection(sprite.getRotation());			
+			updateDirection(sprite.getRotation());
 		}			
 		else{
+			accelSound.stop();
 			if(isRespawning()) sprite.setRegion(respawnFrameNormal);
 			else sprite.setRegion(normalShipFrame);
 			
@@ -189,6 +195,10 @@ public class Ship extends GameObject{
 	public void newGame(){
 		lives = maxLives;
 		restartShip();
+	}
+	
+	public void dispose(){
+		accelSound.dispose();
 	}
 
 }
