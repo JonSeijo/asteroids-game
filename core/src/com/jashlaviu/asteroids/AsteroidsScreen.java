@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class AsteroidsScreen extends ScreenAdapter{
 
 	private int level, startLevel, startingAsteroids;
-	private long lastShootTime, nextShootTime;
+	private long lastShootTime, nextShootTime, score;
 		
 	private ArrayList<Shoot> shoots;
 	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
@@ -60,6 +60,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		startLevel = 0;	
 		startingAsteroids = 3;
+		
+		score = -100;
 	}
 	
 	public void render(float delta){
@@ -102,6 +104,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			if(asteroidCollision(shoot)){
 				destroyAsteroid(shoot);
 				explosionSound.play();
+				score += 10;
 				iter.remove();
 			}
 			else if(shoot.isDistanceReach()){
@@ -177,6 +180,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void nextLevel(){
 		level++;
+		score += 100;
 		createAsteroids(level);
 		System.out.println("\nLEVEL: " + level);
 		ship.addLife();
@@ -267,5 +271,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public int getLevel(){
 		return level;
+	}
+	
+	public long getScore(){
+		return score;
 	}
 }
