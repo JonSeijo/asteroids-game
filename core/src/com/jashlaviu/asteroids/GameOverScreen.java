@@ -20,7 +20,6 @@ public class GameOverScreen extends ScreenAdapter{
 	private SpriteBatch batch;
 	
 	public GameOverScreen(AsteroidsScreen mainScreen, AsteroidsGame game) {
-		System.out.println("\nGame over\n");		
 		this.game = game;	
 		this.mainScreen = mainScreen;		
 		batch = game.batch;

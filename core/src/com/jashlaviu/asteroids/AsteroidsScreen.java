@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jashlaviu.asteroids.bonus.BonusObject;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
@@ -20,6 +21,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 	private ArrayList<Shoot> shoots;
 	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
+	private ArrayList<BonusObject> bonusObjects;
 	private AsteroidsGame game;
 	private Ship ship;
 	private Gui gui;
@@ -52,6 +54,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shoots = new ArrayList<Shoot>();
 		asteroids = new ArrayList<Asteroid>();
 		asteroidsTemporal = new ArrayList<Asteroid>();
+		bonusObjects = new ArrayList<BonusObject>();
 		gui = new Gui(this);
 		
 		background = new Background(starBack);
@@ -64,7 +67,6 @@ public class AsteroidsScreen extends ScreenAdapter{
 		startLevel = 0;	
 		startingAsteroids = 3;
 		
-		score = -100;
 		generalVolume = 0.1f;
 		
 	}
@@ -76,6 +78,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		background.update(delta, game.batch);
 		updateAsteroids(delta, game.batch);
 		updateShoots(delta, game.batch); //Handles asteroid destruction
+		updateBonusObjects(delta, game.batch);
 		ship.update(delta, game.batch);
 		gui.update(delta, game.batch);		
 		
@@ -83,6 +86,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		checkGameOver();
 		checkLevelComplete();
+	}
+	
+	private void updateBonusObjects(float delta, SpriteBatch batch){
+		for(BonusObject bonus : bonusObjects){
+			bonus.update(delta, batch);
+		}
 	}
 	
 
@@ -163,7 +172,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		return false;
 	}
 		
-	public void disparar(){
+	public void makeShoot(){
 		if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 			shoots.add(new Shoot(ship, shootTexture));			
 			lastShootTime = TimeUtils.millis();
@@ -216,9 +225,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}	
 	
 	public void newGame(){
-		System.out.println("Starting new game\n\n");
 		resetObjects();
-		
+		score = -100;
 		level = startLevel;
 		nextLevel();
 	}

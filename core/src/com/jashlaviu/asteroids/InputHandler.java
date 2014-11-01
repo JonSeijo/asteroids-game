@@ -16,7 +16,7 @@ public class InputHandler implements InputProcessor{
 		Ship ship = game.getShip();
 		
 		if (keycode == Keys.SPACE)
-			game.disparar();	
+			game.makeShoot();	
 		
 		if(keycode == Keys.UP)
 			ship.setMoving(true);
