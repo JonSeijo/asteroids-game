@@ -31,7 +31,7 @@ public class Ship extends GameObject{
 	private float shipAnimationTime, stateTime;
 	
 	private int lives, initialLives;
-	private float respawningTime;
+	private float respawningTime, maxRespawnTime;
 	private boolean isRespawning;
 	
 	private Sound accelSound;	
@@ -83,7 +83,7 @@ public class Ship extends GameObject{
 	private void checkRespawn(float delta){
 		if(isRespawning){
 			respawningTime += delta;
-			if(respawningTime >= 2){  //seconds of invulnerability
+			if(respawningTime >= maxRespawnTime){  //seconds of invulnerability
 				respawningTime = 0;
 				isRespawning = false;
 			}
@@ -130,6 +130,7 @@ public class Ship extends GameObject{
 		position.y = wHeight/2;
 		sprite.setCenter(position.x, position.y);	
 		isRespawning = true;
+		maxRespawnTime = 2;
 	}
 	
 	private void updateAnimation(float delta){
@@ -144,10 +145,15 @@ public class Ship extends GameObject{
 		bounds.x = spriteBounds.x + 16;
 		
 		return bounds;
-	}
+	}	
 	
 	private float calculateVelocity(float direction, float delta){
 		return (float)(direction * speed * delta + 0.5 * accel * (delta * delta));
+	}
+	
+	public void setShield(float duration){
+		isRespawning = true;
+		maxRespawnTime = duration;
 	}
 	
 	public void rotate(){				

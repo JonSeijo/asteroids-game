@@ -9,6 +9,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jashlaviu.asteroids.bonus.BonusObject;
@@ -17,11 +18,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 
 	private int level, startLevel, startingAsteroids;
 	private long lastShootTime, nextShootTime, score;
-	private float generalVolume;
+	private float generalVolume, bonusChance;
 		
 	private ArrayList<Shoot> shoots;
 	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
 	private ArrayList<BonusObject> bonusObjects;
+	
 	private AsteroidsGame game;
 	private Ship ship;
 	private Gui gui;
@@ -29,12 +31,15 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	private Texture shipSheet, shootTexture, asteroidsSheet;
 	private Texture starBack, singleAsteroidTexture, protectionTexture;
+	private Texture[] bonusTextures;
+	
 	private TextureRegion[] singleAsteroidRegion;
 	
-	private Sound shootSound, explosionSound, dieSound, levelSound;
+	private Sound shootSound, explosionSound, dieSound, levelSound, bonusSound;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
+		Gdx.input.setInputProcessor(new InputHandler(this));
 	
 		shootTexture = new Texture(Gdx.files.internal("data/graphic/shoot.png"));		
 		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet2.png"));
@@ -42,33 +47,35 @@ public class AsteroidsScreen extends ScreenAdapter{
 		singleAsteroidTexture = new Texture(Gdx.files.internal("data/graphic/singleAsteroid.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
 		
+		Texture bonusLife = new Texture(Gdx.files.internal("data/graphic/bonusLife.png"));
+		Texture bonusShield = new Texture(Gdx.files.internal("data/graphic/bonusShield.png"));
+		bonusTextures = new Texture[]{bonusLife, bonusShield};
+		
 		singleAsteroidRegion = new TextureRegion[1];
 		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
 		
 		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot3.wav"));
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion1.wav"));
 		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
-		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));	
+		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
+		bonusSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/bonus.wav"));
 		
 		ship = new Ship(shipSheet, protectionTexture);		
 		shoots = new ArrayList<Shoot>();
 		asteroids = new ArrayList<Asteroid>();
 		asteroidsTemporal = new ArrayList<Asteroid>();
 		bonusObjects = new ArrayList<BonusObject>();
-		gui = new Gui(this);
-		
+		gui = new Gui(this);		
 		background = new Background(starBack);
-
+	
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 200; //In milliseconds
 		
-		Gdx.input.setInputProcessor(new InputHandler(this));
-		
 		startLevel = 0;	
-		startingAsteroids = 3;
+		startingAsteroids = 3;		
 		
-		generalVolume = 0.1f;
-		
+		generalVolume = 0.1f;	
+		bonusChance = 0.05f;
 	}
 	
 	public void render(float delta){
@@ -89,9 +96,26 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	private void updateBonusObjects(float delta, SpriteBatch batch){
-		for(BonusObject bonus : bonusObjects){
+		Iterator<BonusObject> bonusIterator = bonusObjects.iterator();
+		while(bonusIterator.hasNext()){
+			BonusObject bonus = bonusIterator.next();
 			bonus.update(delta, batch);
-		}
+			if(bonus.isOverlaping(ship)){
+				applyBonus(bonus.getType());
+				bonusIterator.remove();
+			}			
+			else if(bonus.isDistanceReached())
+				bonusIterator.remove();
+			
+		}		
+	}
+	
+	public void applyBonus(int bonus){	
+		bonusSound.play(generalVolume);		
+		if(bonus == BonusObject.BONUS_LIFE)
+			ship.addLife();
+		else if(bonus == BonusObject.BONUS_SHIELD)
+			ship.setShield(BonusObject.BONUS_SHIELD_DURATION);
 	}
 	
 
@@ -122,6 +146,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			if(ast.getBounds().overlaps(object.getBounds())){
 				createAsteroidDivision(ast);
 				asterIter.remove();
+				createRandomBonus();
 				break;
 			}
 		}
@@ -170,6 +195,13 @@ public class AsteroidsScreen extends ScreenAdapter{
 			}
 		}		
 		return false;
+	}
+	
+	public void createRandomBonus(){
+		float r = MathUtils.random(1f);
+		if(r < bonusChance){
+			bonusObjects.add(new BonusObject(this, MathUtils.random(1)));
+		}
 	}
 		
 	public void makeShoot(){
@@ -221,6 +253,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		dieSound.dispose();
 		levelSound.dispose();
 		explosionSound.dispose();
+		bonusSound.dispose();
 		ship.dispose();
 	}	
 	
@@ -293,6 +326,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 	public float getGeneralVolume(){
 		return generalVolume;
+	}
+	
+	public Texture getBonusTexture(int index){
+		return bonusTextures[index];
 	}
 	
 }
