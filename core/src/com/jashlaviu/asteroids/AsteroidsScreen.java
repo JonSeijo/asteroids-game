@@ -6,11 +6,13 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jashlaviu.asteroids.bonus.BonusObject;
 
@@ -34,6 +36,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Texture[] bonusTextures;
 	
 	private TextureRegion[] singleAsteroidRegion;
+	
+	private OrthographicCamera camera;
 	
 	private Sound shootSound, explosionSound, dieSound, levelSound, bonusSound;
 	
@@ -67,21 +71,28 @@ public class AsteroidsScreen extends ScreenAdapter{
 		bonusObjects = new ArrayList<BonusObject>();
 		gui = new Gui(this);		
 		background = new Background(starBack);
-	
+		
+		camera = new OrthographicCamera(800, 600);
+		camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0f);
+		
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 200; //In milliseconds
 		
 		startLevel = 0;	
 		startingAsteroids = 3;		
 		
-		generalVolume = 0.1f;	
-		bonusChance = 0.05f;
+		generalVolume = 0.2f;	
+		bonusChance = 0.055f;
 	}
 	
 	public void render(float delta){
 		
-		game.batch.begin();		
+		camera.update();
+		game.batch.setProjectionMatrix(camera.combined);
+		ScreenShaker.update(camera);
 		
+		game.batch.begin();			
+
 		background.update(delta, game.batch);
 		updateAsteroids(delta, game.batch);
 		updateShoots(delta, game.batch); //Handles asteroid destruction
@@ -100,6 +111,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		while(bonusIterator.hasNext()){
 			BonusObject bonus = bonusIterator.next();
 			bonus.update(delta, batch);
+			
 			if(bonus.isOverlaping(ship)){
 				applyBonus(bonus.getType());
 				bonusIterator.remove();
@@ -129,7 +141,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Shoot shoot = iter.next();
 			if(asteroidCollision(shoot)){
 				destroyAsteroid(shoot);
-				explosionSound.play(generalVolume);
+				explosionSound.play(generalVolume+0.1f);
 				score += 10;
 				iter.remove();
 			}
@@ -144,9 +156,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 		while(asterIter.hasNext()){
 			Asteroid ast = asterIter.next();
 			if(ast.getBounds().overlaps(object.getBounds())){
+				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 10* ast.getScale()/2);
 				createAsteroidDivision(ast);
-				asterIter.remove();
 				createRandomBonus();
+				asterIter.remove();
 				break;
 			}
 		}
@@ -280,6 +293,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		if(asteroidCollision(ship)){
 			if(!ship.isRespawning()){
 				dieSound.play(generalVolume);
+				ScreenShaker.shakeScreen(10, new Vector3(camera.position), 30f);
 				ship.lostLive();
 				if(ship.getLives() <= 0){
 					gameOver();
