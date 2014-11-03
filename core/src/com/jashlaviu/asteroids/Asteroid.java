@@ -19,7 +19,7 @@ public class Asteroid{
 	private Sprite sprite;
 	private Vector2 position, direction;
 	private int wWidth, wHeight;
-	private float speed;
+	private float speed, speedNormal;
 	
 	private TextureRegion singleAsteroidRegion;
 	private Rectangle bounds;
@@ -42,7 +42,7 @@ public class Asteroid{
 		direction.nor();
 		
 		//speed= 210;
-		speed = MathUtils.random(150, 200);
+		speedNormal = speed = MathUtils.random(150, 200);
 		
 		bounds = new Rectangle();
 		
@@ -132,6 +132,13 @@ public class Asteroid{
 	
 	public Rectangle getRect(){
 		return sprite.getBoundingRectangle();
+	}
+	
+	public void setNormalSpeed(float speed){
+		this.speedNormal = speed;
+	}
+	public float getSpeed(){
+		return speed;
 	}
 	
 }

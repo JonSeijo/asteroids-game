@@ -18,6 +18,7 @@ public class AsteroidsGame extends Game {
 	}
 	
 	public void dispose(){
+		batch.dispose();
 		super.dispose();
 	}
 }

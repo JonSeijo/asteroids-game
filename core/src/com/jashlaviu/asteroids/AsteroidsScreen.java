@@ -9,10 +9,13 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jashlaviu.asteroids.bonus.BonusObject;
 
@@ -34,8 +37,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Texture shipSheet, shootTexture, asteroidsSheet;
 	private Texture starBack, singleAsteroidTexture, protectionTexture;
 	private Texture[] bonusTextures;
+	private TextureAtlas destructionAtlas;
 	
 	private TextureRegion[] singleAsteroidRegion;
+	private Array<AtlasRegion> destructionRegions;
 	
 	private OrthographicCamera camera;
 	
@@ -51,6 +56,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 		singleAsteroidTexture = new Texture(Gdx.files.internal("data/graphic/singleAsteroid.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
 		
+		destructionAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/destructionAtlas.atlas"));
+		destructionRegions = destructionAtlas.getRegions();
+		
 		Texture bonusLife = new Texture(Gdx.files.internal("data/graphic/bonusLife.png"));
 		Texture bonusShield = new Texture(Gdx.files.internal("data/graphic/bonusShield.png"));
 		bonusTextures = new Texture[]{bonusLife, bonusShield};
@@ -64,7 +72,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
 		bonusSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/bonus.wav"));
 		
-		ship = new Ship(shipSheet, protectionTexture);		
+		ship = new Ship(this, shipSheet, protectionTexture);		
 		shoots = new ArrayList<Shoot>();
 		asteroids = new ArrayList<Asteroid>();
 		asteroidsTemporal = new ArrayList<Asteroid>();
@@ -179,6 +187,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Vector2 position2 = new Vector2(asteroid.getPosition());
 			
 			Vector2 direction = asteroid.getDirection();
+			float speed = asteroid.getSpeed();
 			
 			 //This excecutes only if asteroid was shoot and if needs to be resized.
 			if(scale == Asteroid.SIZE_BIG) scale = Asteroid.SIZE_MEDIUM;  //If it was big, now it'll be medium
@@ -191,11 +200,13 @@ public class AsteroidsScreen extends ScreenAdapter{
 			direction2.rotate(335f);
 				
 			Asteroid asteroid1 = new Asteroid(singleAsteroidRegion, scale, direction1.x, direction1.y);	
-			asteroid1.setPosition(position1);		
+			asteroid1.setPosition(position1);	
+			asteroid1.setNormalSpeed(speed);
 			asteroidsTemporal.add(asteroid1);
 			
 			Asteroid asteroid2 = new Asteroid(singleAsteroidRegion, scale, direction2.x, direction2.y);
-			asteroid2.setPosition(position2);		
+			asteroid2.setPosition(position2);
+			asteroid2.setNormalSpeed(speed);
 			asteroidsTemporal.add(asteroid2);
 		}	
 	}
@@ -294,7 +305,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			if(!ship.isRespawning()){
 				dieSound.play(generalVolume);
 				ScreenShaker.shakeScreen(10, new Vector3(camera.position), 30f);
-				ship.lostLive();
+				ship.destroy();
 				if(ship.getLives() <= 0){
 					gameOver();
 				}
@@ -344,6 +355,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public Texture getBonusTexture(int index){
 		return bonusTextures[index];
+	}
+	
+	public Array<AtlasRegion> getDestructionRegions(){
+		return destructionRegions;
 	}
 	
 }
