@@ -7,14 +7,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.jashlaviu.asteroids.AsteroidsScreen;
-import com.jashlaviu.asteroids.Ship;
+import com.jashlaviu.asteroids.gameobjects.Ship;
 
 public class BonusObject {
 	
 	public static int BONUS_LIFE = 0;
 	public static int BONUS_SHIELD = 1;
+	public static int BONUS_SLOW_AST = 2;
 	
-	public static float BONUS_SHIELD_DURATION = 6f;
+	public static float SHIELD_DURATION = 6f;
+	public static float SLOW_AST_DURATION = 6f;
 	
 	private int type;
 	

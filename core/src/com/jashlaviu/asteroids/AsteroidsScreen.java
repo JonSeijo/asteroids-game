@@ -17,7 +17,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jashlaviu.asteroids.background.Background;
 import com.jashlaviu.asteroids.bonus.BonusObject;
+import com.jashlaviu.asteroids.gameobjects.Asteroid;
+import com.jashlaviu.asteroids.gameobjects.GameObject;
+import com.jashlaviu.asteroids.gameobjects.Ship;
+import com.jashlaviu.asteroids.gameobjects.Shoot;
 
 public class AsteroidsScreen extends ScreenAdapter{
 
@@ -135,7 +140,11 @@ public class AsteroidsScreen extends ScreenAdapter{
 		if(bonus == BonusObject.BONUS_LIFE)
 			ship.addLife();
 		else if(bonus == BonusObject.BONUS_SHIELD)
-			ship.setShield(BonusObject.BONUS_SHIELD_DURATION);
+			ship.setShield();
+		else if(bonus == BonusObject.BONUS_SLOW_AST){
+			for(Asteroid ast : asteroids)
+				ast.slowAsteroid();
+		}
 	}
 	
 
@@ -224,7 +233,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void createRandomBonus(){
 		float r = MathUtils.random(1f);
 		if(r < bonusChance){
-			bonusObjects.add(new BonusObject(this, MathUtils.random(1)));
+			bonusObjects.add(new BonusObject(this, MathUtils.random(2)));
 		}
 	}
 		
@@ -354,11 +363,16 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public Texture getBonusTexture(int index){
-		return bonusTextures[index];
+		return bonusTextures[0];
 	}
 	
 	public Array<AtlasRegion> getDestructionRegions(){
 		return destructionRegions;
 	}
+	
+	public void toggleFpsCounter(){
+		gui.toggleFpsCounter();
+	}
+
 	
 }

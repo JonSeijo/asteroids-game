@@ -2,6 +2,7 @@ package com.jashlaviu.asteroids;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.jashlaviu.asteroids.gameobjects.Ship;
 
 public class InputHandler implements InputProcessor{
 	
@@ -25,7 +26,10 @@ public class InputHandler implements InputProcessor{
 			ship.setRotationSide(Ship.RIGHT);		
 		
 		if(keycode == Keys.LEFT)
-			ship.setRotationSide(Ship.LEFT);	
+			ship.setRotationSide(Ship.LEFT);
+		
+		if(keycode == Keys.TAB)
+			game.toggleFpsCounter();
 		
 		return false;
 	}

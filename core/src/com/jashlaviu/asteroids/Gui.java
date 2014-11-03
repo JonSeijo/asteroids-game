@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Gui {
 	
 	private float shootTimerWidth, shootTimerLen;
+	private boolean showFps;
 	
 	private AsteroidsScreen game;
 	private Texture shootTimer, hearth, levelRect;
@@ -42,8 +43,11 @@ public class Gui {
 		for(int i = 0; i < game.getLevel(); i++){
 			batch.draw(levelBar, 750, 575 - i*20);
 		}
-
-
+		
+		if(showFps){
+			font.setColor(1, 1, 1, 1);
+			font.draw(batch, "FPS: " + Float.toString(Gdx.graphics.getFramesPerSecond()), 10, 540);
+		}
 	}
 	
 	public void dispose(){
@@ -59,6 +63,10 @@ public class Gui {
 		else
 			shootTimerLen = shootTimerWidth;
 				
+	}
+	
+	public void toggleFpsCounter(){
+		showFps = !showFps;
 	}
 	
 }

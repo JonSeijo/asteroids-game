@@ -1,4 +1,4 @@
-package com.jashlaviu.asteroids;
+package com.jashlaviu.asteroids.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.jashlaviu.asteroids.bonus.BonusObject;
 
 public class Asteroid{
 	
@@ -14,7 +15,9 @@ public class Asteroid{
 	public static final float SIZE_MEDIUM = 1f; 
 	public static final float SIZE_SMALL = 0.6f; 
 	
-	private float scale, rotation;
+	private float scale, rotation, rotationNormal;
+	private float slowCount;
+	private boolean slowed;
 	
 	private Sprite sprite;
 	private Vector2 position, direction;
@@ -23,7 +26,7 @@ public class Asteroid{
 	
 	private TextureRegion singleAsteroidRegion;
 	private Rectangle bounds;
-	
+		
 	public Asteroid(TextureRegion[] asteroidsFrames, float scale, float directionx, float directiony){
 		
 		sprite = new Sprite(asteroidsFrames[0]);		
@@ -55,7 +58,7 @@ public class Asteroid{
 		bounds.width = sprite.getBoundingRectangle().width * .80f;
 		bounds.height = sprite.getBoundingRectangle().height * .80f;	
 		
-		rotation = 2;
+		rotationNormal = rotation = 2f;
 		sprite.rotate(MathUtils.random(180));
 	
 	}
@@ -68,9 +71,10 @@ public class Asteroid{
 		position.x += speed * delta * direction.x;
 		position.y += speed * delta * direction.y;
 		
-		updateBounds();
+		updateBounds();		
+		crossScreenUpdate2();
 		
-		crossScreenUpdate2();	
+		if(slowed) if((slowCount += delta) >= BonusObject.SLOW_AST_DURATION) normalizeAsteroid();		
 		
 		sprite.setCenter(position.x, position.y);	
 		sprite.setOrigin(32*scale, 32*scale);		
@@ -83,9 +87,22 @@ public class Asteroid{
 		Vector2 center = new Vector2();
 		sprite.getBoundingRectangle().getCenter(center);
 		bounds.setCenter(center);
+	}	
+
+	public void slowAsteroid(){
+		slowed = true;
+		slowCount = 0;
+		speed *= .3f;
+		rotation *= .5f;
 	}
 	
-	public void crossScreenUpdate2(){
+	public void normalizeAsteroid(){
+		slowed = false;
+		speed = speedNormal;
+		rotation = rotationNormal;
+	}
+	
+	private void crossScreenUpdate2(){
 		if(sprite.getX() > wWidth)
 			position.x = -sprite.getWidth()/2;
 		else if(sprite.getX() + sprite.getWidth() < 0)
@@ -99,8 +116,7 @@ public class Asteroid{
 			
 		sprite.setCenter(position.x, position.y);		
 	}
-
-	
+		
 	public Rectangle getBounds() {
 		return bounds;
 	}

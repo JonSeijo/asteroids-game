@@ -1,4 +1,4 @@
-package com.jashlaviu.asteroids;
+package com.jashlaviu.asteroids.background;
 
 import java.util.Random;
 

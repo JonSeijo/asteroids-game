@@ -1,4 +1,4 @@
-package com.jashlaviu.asteroids;
+package com.jashlaviu.asteroids.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.jashlaviu.asteroids.AsteroidsScreen;
+import com.jashlaviu.asteroids.bonus.BonusObject;
 
 public class Ship extends GameObject{
 	
@@ -159,9 +161,9 @@ public class Ship extends GameObject{
 		return (float)(direction * speed * delta + 0.5 * accel * (delta * delta));
 	}
 	
-	public void setShield(float duration){
+	public void setShield(){
 		isRespawning = true;
-		maxRespawnTime = duration;
+		maxRespawnTime = BonusObject.SHIELD_DURATION;
 	}
 	
 	public void rotate(){				
