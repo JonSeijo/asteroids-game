@@ -41,10 +41,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	private Texture shipSheet, shootTexture, asteroidsSheet;
 	private Texture starBack, singleAsteroidTexture, protectionTexture;
-	private Texture[] bonusTextures;
 	private TextureAtlas destructionAtlas;
 	
 	private TextureRegion[] singleAsteroidRegion;
+	private TextureRegion bonusRegion;
 	private Array<AtlasRegion> destructionRegions;
 	
 	private OrthographicCamera camera;
@@ -64,9 +64,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		destructionAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/destructionAtlas.atlas"));
 		destructionRegions = destructionAtlas.getRegions();
 		
-		Texture bonusLife = new Texture(Gdx.files.internal("data/graphic/bonusLife.png"));
-		Texture bonusShield = new Texture(Gdx.files.internal("data/graphic/bonusShield.png"));
-		bonusTextures = new Texture[]{bonusLife, bonusShield};
+		Texture bonusTexture = new Texture(Gdx.files.internal("data/graphic/bonus.png"));		
+		bonusRegion = new TextureRegion(bonusTexture);
 		
 		singleAsteroidRegion = new TextureRegion[1];
 		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
@@ -95,7 +94,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		startingAsteroids = 3;		
 		
 		generalVolume = 0.2f;	
-		bonusChance = 0.055f;
+		bonusChance = 0.07f;
+		//bonusChance = 0.7f;
 	}
 	
 	public void render(float delta){
@@ -362,8 +362,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		return generalVolume;
 	}
 	
-	public Texture getBonusTexture(int index){
-		return bonusTextures[0];
+	public TextureRegion getBonusRegion(){
+		return bonusRegion;
 	}
 	
 	public Array<AtlasRegion> getDestructionRegions(){

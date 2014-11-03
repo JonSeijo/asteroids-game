@@ -1,8 +1,8 @@
 package com.jashlaviu.asteroids.bonus;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,7 +20,7 @@ public class BonusObject {
 	
 	private int type;
 	
-	private Texture texture;
+	private TextureRegion texture;
 	private  Vector2 position, direction;
 	private  Rectangle bounds;
 	private float width, height, wWidth, wHeight;
@@ -28,10 +28,10 @@ public class BonusObject {
 	
 	public BonusObject(AsteroidsScreen game, int type){
 		this.type = type;			
-		texture = game.getBonusTexture(type);
+		texture = game.getBonusRegion();
 				
-		width = texture.getWidth();
-		height = texture.getHeight();
+		width = texture.getRegionWidth();
+		height = texture.getRegionHeight();
 		
 		wWidth = Gdx.graphics.getWidth();
 		wHeight = Gdx.graphics.getHeight();		
