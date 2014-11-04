@@ -151,9 +151,10 @@ public class Ship extends GameObject{
 	public Rectangle getBounds(){
 		Rectangle spriteBounds = sprite.getBoundingRectangle();
 		Rectangle bounds = spriteBounds;
-		bounds.width = spriteBounds.width - 16;
-		bounds.x = spriteBounds.x + 16;
-		
+		bounds.setCenter(position.x + 2, position.y + 2);
+		bounds.width = spriteBounds.width - 6;
+		bounds.height = spriteBounds.height - 6;
+		bounds.x = spriteBounds.x + 8;		
 		return bounds;
 	}	
 	

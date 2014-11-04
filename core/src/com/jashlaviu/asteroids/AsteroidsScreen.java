@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -39,7 +40,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Gui gui;
 	private Background background;
 	
-	private Texture shipSheet, shootTexture, asteroidsSheet;
+	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture;
 	private Texture starBack, singleAsteroidTexture, protectionTexture;
 	private TextureAtlas destructionAtlas;
 	
@@ -50,6 +51,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private OrthographicCamera camera;
 	
 	private Sound shootSound, explosionSound, dieSound, levelSound, bonusSound;
+	
+	private ShapeRenderer shapeR;
 	
 	public AsteroidsScreen(AsteroidsGame game){
 		this.game = game;		
@@ -64,7 +67,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		destructionAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/destructionAtlas.atlas"));
 		destructionRegions = destructionAtlas.getRegions();
 		
-		Texture bonusTexture = new Texture(Gdx.files.internal("data/graphic/bonus.png"));		
+		bonusTexture = new Texture(Gdx.files.internal("data/graphic/bonus.png"));		
 		bonusRegion = new TextureRegion(bonusTexture);
 		
 		singleAsteroidRegion = new TextureRegion[1];
@@ -94,8 +97,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 		startingAsteroids = 3;		
 		
 		generalVolume = 0.2f;	
-		bonusChance = 0.07f;
-		//bonusChance = 0.7f;
+		bonusChance = 0.05f;
+	//	bonusChance = 1f;
+		
+		shapeR = new ShapeRenderer();
 	}
 	
 	public void render(float delta){
@@ -137,6 +142,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void applyBonus(int bonus){	
 		bonusSound.play(generalVolume);		
+		score += 200;
 		if(bonus == BonusObject.BONUS_LIFE)
 			ship.addLife();
 		else if(bonus == BonusObject.BONUS_SHIELD)
@@ -262,10 +268,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	public void nextLevel(){
 		level++;
 		score += level*100;
+		shoots.clear();
 		createAsteroids(level);
 		ship.addLife();
-		ship.restartShip();	
-		
+		ship.restartShip();			
 		levelSound.play(generalVolume);
 	}
 	
@@ -280,7 +286,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shootTexture.dispose();
 		asteroidsSheet.dispose();
 		gui.dispose();		
-		starBack.dispose();
+		starBack.dispose();	
+		bonusTexture.dispose();
 				
 		shootSound.dispose();
 		dieSound.dispose();
@@ -288,6 +295,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 		explosionSound.dispose();
 		bonusSound.dispose();
 		ship.dispose();
+		
+		shapeR.dispose();		
+		
 	}	
 	
 	public void newGame(){
@@ -320,6 +330,26 @@ public class AsteroidsScreen extends ScreenAdapter{
 				}
 			}
 		}				
+	}
+	
+	private void drawBounds(){
+		/**
+		 * Draws all collision bounds for debugging purproses.
+		 */
+		shapeR.begin(ShapeRenderer.ShapeType.Line);
+		
+		shapeR.setColor(1, 0, 0, 1);
+		shapeR.rect(ship.getBounds().getX(), ship.getBounds().getY(), ship.getBounds().getWidth(), ship.getBounds().getHeight());
+		
+		shapeR.setColor(0, 1, 0, 1);
+		for(BonusObject bonus : bonusObjects)
+			shapeR.rect(bonus.getBounds().getX(), bonus.getBounds().getY(), bonus.getBounds().getWidth(), bonus.getBounds().getHeight());	
+		
+		shapeR.setColor(0, 0, 1, 1);
+		for(Asteroid ast : asteroids)
+			shapeR.rect(ast.getBounds().getX(), ast.getBounds().getY(), ast.getBounds().getWidth(), ast.getBounds().getHeight());	
+		
+		shapeR.end();
 	}
 	
 	public void show(){

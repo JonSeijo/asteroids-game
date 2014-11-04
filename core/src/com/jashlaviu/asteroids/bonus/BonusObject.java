@@ -42,7 +42,7 @@ public class BonusObject {
 		bounds = new Rectangle(position.x + width/2, position.y + height/2, width, height);
 		
 		speed = 200;
-		maxTravelDistance = 500;
+		maxTravelDistance = 600;
 	}
 	
 	public void update(float delta, SpriteBatch batch){
@@ -58,20 +58,22 @@ public class BonusObject {
 	}
 	
 	public void crossScreenUpdate(){
-		if(bounds.x > wWidth)
+		if(position.x > wWidth + width/2)
 			position.x = -width/2;
-		else if(bounds.x + width < 0)
+		else if(position.x + width/2 < 0)
 			position.x = wWidth + width/2;		
 
-		if(bounds.y > wHeight)
+		if(position.y > wHeight + height/2)
 			position.y = -height/2;
-		else if(bounds.y + height < 0)
+		else if(position.y + height/2 < 0)
 			position.y = wHeight + height/2;
 		
 	}
 	
 	public void updateBounds(){
-		bounds.setCenter(position.x, position.y);
+		//bounds.setCenter(position.x, position.y);
+		bounds.x = position.x;
+		bounds.y = position.y;
 	}
 	
 	public boolean isDistanceReached(){
@@ -84,6 +86,10 @@ public class BonusObject {
 	
 	public boolean isOverlaping(Ship ship){
 		return bounds.overlaps(ship.getBounds());
+	}
+	
+	public Rectangle getBounds(){
+		return bounds;
 	}
 	
 	
