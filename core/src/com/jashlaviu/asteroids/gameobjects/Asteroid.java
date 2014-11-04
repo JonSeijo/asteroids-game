@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.jashlaviu.asteroids.AsteroidsScreen;
 import com.jashlaviu.asteroids.bonus.BonusObject;
 
 public class Asteroid{
@@ -27,15 +28,18 @@ public class Asteroid{
 	private TextureRegion singleAsteroidRegion;
 	private Rectangle bounds;
 		
-	public Asteroid(TextureRegion[] asteroidsFrames, float scale, float directionx, float directiony){
+	public Asteroid(AsteroidsScreen game, float scale, float directionx, float directiony){
 		
-		sprite = new Sprite(asteroidsFrames[0]);		
+		singleAsteroidRegion = game.getAsteroidRegion("asteroid", MathUtils.random(1, 3));
+		System.out.println(MathUtils.random(1, 3));
+		
+		sprite = new Sprite(singleAsteroidRegion);		
 		position = new Vector2();
 		direction = new Vector2();
 		
 		wWidth = Gdx.graphics.getWidth();
 		wHeight = Gdx.graphics.getHeight();		
-		singleAsteroidRegion = asteroidsFrames[0];
+
 
 		position.x = MathUtils.random(0, 790);
 		position.y = MathUtils.random(0, 590);
@@ -63,8 +67,8 @@ public class Asteroid{
 	
 	}
 	
-	public Asteroid(TextureRegion[] asteroidsFrames, float scale){
-		this(asteroidsFrames, scale, MathUtils.random(-1f,1f), MathUtils.random(-1f,1f));
+	public Asteroid(AsteroidsScreen game, float scale){
+		this(game, scale, MathUtils.random(-1f,1f), MathUtils.random(-1f,1f));
 	}
 	
 	public void update(float delta, SpriteBatch batch){			

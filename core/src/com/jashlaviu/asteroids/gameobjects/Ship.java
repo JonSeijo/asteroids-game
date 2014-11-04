@@ -56,7 +56,7 @@ public class Ship extends GameObject{
 		shipAnimationTime = 0.25f;
 		shipAnimation = new Animation(shipAnimationTime, shipAnimationFrames);		
 		
-		destructionAnimation = new Animation(0.1f, game.getDestructionRegions());
+		destructionAnimation = new Animation(0.12f, game.getDestructionRegions());
 				
 		accelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/accel.wav"));
 		

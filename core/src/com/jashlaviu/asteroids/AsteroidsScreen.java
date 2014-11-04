@@ -42,7 +42,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture;
 	private Texture starBack, singleAsteroidTexture, protectionTexture;
-	private TextureAtlas destructionAtlas;
+	private TextureAtlas destructionAtlas, asteroidAtlas;
 	
 	private TextureRegion[] singleAsteroidRegion;
 	private TextureRegion bonusRegion;
@@ -66,6 +66,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		destructionAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/destructionAtlas.atlas"));
 		destructionRegions = destructionAtlas.getRegions();
+		asteroidAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/asteroidsAtlas.atlas"));
 		
 		bonusTexture = new Texture(Gdx.files.internal("data/graphic/bonus.png"));		
 		bonusRegion = new TextureRegion(bonusTexture);
@@ -97,7 +98,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		startingAsteroids = 3;		
 		
 		generalVolume = 0.2f;	
-		bonusChance = 0.05f;
+		bonusChance = 0.04f;
 	//	bonusChance = 1f;
 		
 		shapeR = new ShapeRenderer();
@@ -119,6 +120,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		gui.update(delta, game.batch);		
 		
 		game.batch.end();	
+		
+//		drawBounds();
 		
 		checkGameOver();
 		checkLevelComplete();
@@ -214,12 +217,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Vector2 direction2 = new Vector2(direction);
 			direction2.rotate(335f);
 				
-			Asteroid asteroid1 = new Asteroid(singleAsteroidRegion, scale, direction1.x, direction1.y);	
+			Asteroid asteroid1 = new Asteroid(this, scale, direction1.x, direction1.y);	
 			asteroid1.setPosition(position1);	
 			asteroid1.setNormalSpeed(speed);
 			asteroidsTemporal.add(asteroid1);
 			
-			Asteroid asteroid2 = new Asteroid(singleAsteroidRegion, scale, direction2.x, direction2.y);
+			Asteroid asteroid2 = new Asteroid(this, scale, direction2.x, direction2.y);
 			asteroid2.setPosition(position2);
 			asteroid2.setNormalSpeed(speed);
 			asteroidsTemporal.add(asteroid2);
@@ -260,7 +263,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void createAsteroids(int amount){
 		for(int i = 0; i < amount + startingAsteroids; i++){
-			asteroids.add(new Asteroid(singleAsteroidRegion, Asteroid.SIZE_BIG));
+			asteroids.add(new Asteroid(this, Asteroid.SIZE_BIG));
 		}
 	}
 
@@ -402,6 +405,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void toggleFpsCounter(){
 		gui.toggleFpsCounter();
+	}
+	
+	public TextureRegion getAsteroidRegion(String name, int index){
+		return asteroidAtlas.findRegion(name, index);
 	}
 
 	
