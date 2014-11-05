@@ -30,6 +30,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private int level, startLevel, startingAsteroids;
 	private long lastShootTime, nextShootTime, score;
 	private float generalVolume, bonusChance;
+	private boolean isPaused;
 		
 	private ArrayList<Shoot> shoots;
 	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
@@ -41,7 +42,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Background background;
 	
 	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture;
-	private Texture starBack, singleAsteroidTexture, protectionTexture;
+	private Texture starBack, singleAsteroidTexture, protectionTexture, pausedTexture;
 	private TextureAtlas destructionAtlas, asteroidAtlas;
 	
 	private TextureRegion[] singleAsteroidRegion;
@@ -61,8 +62,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shootTexture = new Texture(Gdx.files.internal("data/graphic/shoot.png"));		
 		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet2.png"));
 		protectionTexture = new Texture(Gdx.files.internal("data/graphic/protection.png"));
-		singleAsteroidTexture = new Texture(Gdx.files.internal("data/graphic/singleAsteroid.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
+		pausedTexture = new Texture(Gdx.files.internal("data/graphic/paused.png"));		
 		
 		destructionAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/destructionAtlas.atlas"));
 		destructionRegions = destructionAtlas.getRegions();
@@ -70,10 +71,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		bonusTexture = new Texture(Gdx.files.internal("data/graphic/bonus.png"));		
 		bonusRegion = new TextureRegion(bonusTexture);
-		
-		singleAsteroidRegion = new TextureRegion[1];
-		singleAsteroidRegion[0] = new TextureRegion(singleAsteroidTexture);
-		
+				
 		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot3.wav"));
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion1.wav"));
 		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
@@ -94,7 +92,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 200; //In milliseconds
 		
-		startLevel = 0;	
+		startLevel = 3;	
 		startingAsteroids = 3;		
 		
 		generalVolume = 0.2f;	
@@ -104,27 +102,30 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shapeR = new ShapeRenderer();
 	}
 	
-	public void render(float delta){
-		
-		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
-		ScreenShaker.update(camera);
-		
-		game.batch.begin();			
-
-		background.update(delta, game.batch);
-		updateAsteroids(delta, game.batch);
-		updateShoots(delta, game.batch); //Handles asteroid destruction
-		updateBonusObjects(delta, game.batch);
-		ship.update(delta, game.batch);
-		gui.update(delta, game.batch);		
-		
-		game.batch.end();	
-		
-//		drawBounds();
-		
-		checkGameOver();
-		checkLevelComplete();
+	public void render(float delta){		
+		if(!isPaused){			
+			camera.update();
+			game.batch.setProjectionMatrix(camera.combined);
+			ScreenShaker.update(camera);
+			
+			game.batch.begin();			
+	
+			background.update(delta, game.batch);
+			updateAsteroids(delta, game.batch);
+			updateShoots(delta, game.batch); //Handles asteroid destruction
+			updateBonusObjects(delta, game.batch);
+			ship.update(delta, game.batch);
+			gui.update(delta, game.batch);		
+			
+			game.batch.end();	
+			
+			checkGameOver();
+			checkLevelComplete();
+		}else{
+			game.batch.begin();			
+			game.batch.draw(pausedTexture, 250, 200);			
+			game.batch.end();			
+		}
 	}
 	
 	private void updateBonusObjects(float delta, SpriteBatch batch){
@@ -247,10 +248,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 		
 	public void makeShoot(){
-		if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
-			shoots.add(new Shoot(ship, shootTexture));			
-			lastShootTime = TimeUtils.millis();
-			shootSound.play(generalVolume);
+		if(!isPaused){
+			if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
+				shoots.add(new Shoot(ship, shootTexture));			
+				lastShootTime = TimeUtils.millis();
+				shootSound.play(generalVolume);
+			}
 		}
 	}
 	
@@ -291,6 +294,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		gui.dispose();		
 		starBack.dispose();	
 		bonusTexture.dispose();
+		pausedTexture.dispose();
 				
 		shootSound.dispose();
 		dieSound.dispose();
@@ -335,6 +339,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		}				
 	}
 	
+	@SuppressWarnings("unused")
 	private void drawBounds(){
 		/**
 		 * Draws all collision bounds for debugging purproses.
@@ -365,6 +370,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public Ship getShip(){
 		return ship;
+	}
+	
+	public void togglePause(){
+		isPaused = !isPaused;
 	}
 
 	public long getLastShootTime() {

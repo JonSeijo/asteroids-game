@@ -28,8 +28,12 @@ public class InputHandler implements InputProcessor{
 		if(keycode == Keys.LEFT)
 			ship.setRotationSide(Ship.LEFT);
 		
+		if(keycode == Keys.ESCAPE)
+			game.togglePause();
+		
 		if(keycode == Keys.TAB)
 			game.toggleFpsCounter();
+		
 		
 		return false;
 	}

@@ -31,7 +31,6 @@ public class Asteroid{
 	public Asteroid(AsteroidsScreen game, float scale, float directionx, float directiony){
 		
 		singleAsteroidRegion = game.getAsteroidRegion("asteroid", MathUtils.random(1, 3));
-		System.out.println(MathUtils.random(1, 3));
 		
 		sprite = new Sprite(singleAsteroidRegion);		
 		position = new Vector2();
