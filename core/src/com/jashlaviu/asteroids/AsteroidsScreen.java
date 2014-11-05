@@ -41,7 +41,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Gui gui;
 	private Background background;
 	
-	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture;
+	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture, gameOverTexture;
 	private Texture starBack, singleAsteroidTexture, protectionTexture, pausedTexture;
 	private TextureAtlas destructionAtlas, asteroidAtlas;
 	
@@ -64,6 +64,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		protectionTexture = new Texture(Gdx.files.internal("data/graphic/protection.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
 		pausedTexture = new Texture(Gdx.files.internal("data/graphic/paused.png"));		
+		gameOverTexture = new Texture(Gdx.files.internal("data/graphic/gameOver.png"));
 		
 		destructionAtlas = new TextureAtlas(Gdx.files.internal("data/graphic/destructionAtlas.atlas"));
 		destructionRegions = destructionAtlas.getRegions();
@@ -92,10 +93,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 200; //In milliseconds
 		
-		startLevel = 3;	
-		startingAsteroids = 3;		
+		startLevel = 0;	
+		startingAsteroids = 4;		
 		
-		generalVolume = 0.2f;	
+		generalVolume = 0.3f;	
 		bonusChance = 0.04f;
 	//	bonusChance = 1f;
 		
@@ -269,7 +270,6 @@ public class AsteroidsScreen extends ScreenAdapter{
 			asteroids.add(new Asteroid(this, Asteroid.SIZE_BIG));
 		}
 	}
-
 	
 	public void nextLevel(){
 		level++;
@@ -282,7 +282,17 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void gameOver(){
+		if(score >= getHiScore()) setHiScore(score);
 		game.setScreen(new GameOverScreen(this, game));
+	}
+	
+	public long getHiScore(){
+		return AsteroidsGame.preferences.getLong("hiscore");
+	}
+	
+	public void setHiScore(long score){
+		AsteroidsGame.preferences.putLong("hiscore", score);
+		AsteroidsGame.preferences.flush();
 	}
 
 	
@@ -295,6 +305,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		starBack.dispose();	
 		bonusTexture.dispose();
 		pausedTexture.dispose();
+		gameOverTexture.dispose();
 				
 		shootSound.dispose();
 		dieSound.dispose();
@@ -410,6 +421,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public Array<AtlasRegion> getDestructionRegions(){
 		return destructionRegions;
+	}
+	
+	public Texture getGameOverTexture(){
+		return gameOverTexture;
 	}
 	
 	public void toggleFpsCounter(){

@@ -34,7 +34,8 @@ public class Gui {
 		updateShootTimer();
 		batch.draw(shootTimer, 10, 10, shootTimerLen, 15);
 		
-		font.draw(batch, Long.toString(game.getScore()), 10, 50);
+		font.draw(batch, "Score: " + Long.toString(game.getScore()), 10, 50);
+		font.draw(batch, "HI-Score: " + Long.toString(AsteroidsGame.preferences.getLong("hiscore")), 130, 50);
 		
 		for(int i = 0; i < game.getLives(); i++){
 			batch.draw(hearth, 10 + i * 40, 560);

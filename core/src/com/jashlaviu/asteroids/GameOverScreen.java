@@ -27,7 +27,7 @@ public class GameOverScreen extends ScreenAdapter{
 		font = new BitmapFont();
 		
 		score = mainScreen.getScore();		
-		gameOverTexture = new Texture(Gdx.files.internal("data/graphic/gameOver.png"));
+		gameOverTexture = mainScreen.getGameOverTexture();
 	}
 	
 	public void render(float delta){		
@@ -44,7 +44,8 @@ public class GameOverScreen extends ScreenAdapter{
 		batch.draw(gameOverTexture, 70, 300);
 		
 		font.setColor(0, 0, 0, 1);	
-		font.draw(batch, "Score: \n" + Long.toString(score), 380, 100);
+		font.draw(batch, "SCORE: \n" + Long.toString(score), 380, 100);
+		font.draw(batch, "HISCORE: " + Long.toString(AsteroidsGame.preferences.getLong("hiscore")), 380, 70);
 		
 		batch.end();		
 	}
