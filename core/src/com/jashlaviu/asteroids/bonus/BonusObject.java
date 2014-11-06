@@ -15,7 +15,7 @@ public class BonusObject {
 	public static int BONUS_SHIELD = 1;
 	public static int BONUS_SLOW_AST = 2;
 	
-	public static float SHIELD_DURATION = 6f;
+	public static float SHIELD_DURATION = 8f;
 	public static float SLOW_AST_DURATION = 6f;
 	
 	private int type;

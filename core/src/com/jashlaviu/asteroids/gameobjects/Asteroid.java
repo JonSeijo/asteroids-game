@@ -48,7 +48,8 @@ public class Asteroid{
 		direction.nor();
 		
 		//speed= 210;
-		speedNormal = speed = MathUtils.random(150, 200);
+	//	speedNormal = speed = MathUtils.random(150, 200);
+		speedNormal = speed = MathUtils.random(100 + 11*game.getLevel(), 150 + 11*game.getLevel());
 		
 		bounds = new Rectangle();
 		

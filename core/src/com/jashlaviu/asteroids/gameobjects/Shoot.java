@@ -10,7 +10,7 @@ public class Shoot extends GameObject{
 	public Shoot(Ship ship, Texture texture){
 		super(texture);
 		
-		position.set(ship.getCenterX(), ship.getCenterY());
+		position.set(ship.getCenterX()+8, ship.getCenterY());
 			
 		updateDirection(ship.getRotationAngle());
 		
@@ -18,7 +18,7 @@ public class Shoot extends GameObject{
 		sprite.setRotation(ship.getRotationAngle());
 		
 		speed = 600;
-		distanceLimit = 70;
+		distanceLimit = 40;
 	}
 	
 	public void update(float delta, SpriteBatch batch){
