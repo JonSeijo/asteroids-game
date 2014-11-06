@@ -10,6 +10,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Background {
+	/**
+	 * The background includes the stars and its movement.
+	 */
 	
 	private float speed;
 	

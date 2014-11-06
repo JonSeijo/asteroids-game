@@ -30,7 +30,7 @@ public class Ship extends GameObject{
 	private Texture protectionTex;
 	private TextureRegion[] shipAnimationFrames;
 	private TextureRegion normalShipFrame, currentShipFrame;
-	private float shipAnimationTime, stateTime;
+	private float stateTime;
 	
 	private int lives, initialLives;
 	private float respawningTime, maxRespawnTime;
@@ -45,18 +45,14 @@ public class Ship extends GameObject{
 		velocity = new Vector2();
 		
 		wWidth = Gdx.graphics.getWidth();
-		wHeight = Gdx.graphics.getHeight();
+		wHeight = Gdx.graphics.getHeight();		
 		
-		// Set up fire animation		
-		shipAnimationFrames = new TextureRegion[3];		
-	
-		for(int i = 1; i < 4; i++){
+		shipAnimationFrames = new TextureRegion[3];	 // Set up Fire animation		
+		for(int i = 1; i < 4; i++)
 			shipAnimationFrames[i-1] = shipSheet[i][0];
-		}		
-		shipAnimationTime = 0.25f;
-		shipAnimation = new Animation(shipAnimationTime, shipAnimationFrames);		
+		shipAnimation = new Animation(0.25f, shipAnimationFrames);		
 		
-		destructionAnimation = new Animation(0.12f, game.getDestructionRegions());
+		destructionAnimation = new Animation(0.10f, game.getDestructionRegions());  
 				
 		accelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/accel.wav"));
 		

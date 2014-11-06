@@ -42,10 +42,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Background background;
 	
 	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture, gameOverTexture;
-	private Texture starBack, singleAsteroidTexture, protectionTexture, pausedTexture;
+	private Texture starBack, protectionTexture, pausedTexture;
 	private TextureAtlas destructionAtlas, asteroidAtlas;
 	
-	private TextureRegion[] singleAsteroidRegion;
 	private TextureRegion bonusRegion;
 	private Array<AtlasRegion> destructionRegions;
 	
@@ -111,18 +110,19 @@ public class AsteroidsScreen extends ScreenAdapter{
 			
 			game.batch.begin();			
 	
-			background.update(delta, game.batch);
-			updateAsteroids(delta, game.batch);
-			updateShoots(delta, game.batch); //Handles asteroid destruction
-			updateBonusObjects(delta, game.batch);
-			ship.update(delta, game.batch);
-			gui.update(delta, game.batch);		
+			background.update(delta, game.batch);   // Move and render the stars in background
+			updateAsteroids(delta, game.batch);		// Move and render asteroids
+			updateShoots(delta, game.batch); 		// Move and render shoos. Handles asteroid destruction
+			updateBonusObjects(delta, game.batch);	// Move and render bonusObjects. Handles bonus aplication.
+			ship.update(delta, game.batch);			// Move and render ship. Handles shield, lives, and stuff.
+			gui.update(delta, game.batch);			// Render hearts, score and gui stuff.
 			
 			game.batch.end();	
 			
-			checkGameOver();
-			checkLevelComplete();
-		}else{
+			checkGameOver();			// Handles asteroid collision with ship. Checks if gameover (lives <= 0)
+			checkLevelComplete();		// Checks if all asteroids are destroyed, and pass to next level.
+		
+		}else{  					// If it is paused
 			game.batch.begin();			
 			game.batch.draw(pausedTexture, 250, 200);			
 			game.batch.end();			
@@ -130,23 +130,29 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	private void updateBonusObjects(float delta, SpriteBatch batch){
+		/**
+		 * Moves, draws and checks collision with ship.
+		 */
 		Iterator<BonusObject> bonusIterator = bonusObjects.iterator();
 		while(bonusIterator.hasNext()){
 			BonusObject bonus = bonusIterator.next();
-			bonus.update(delta, batch);
+			bonus.update(delta, batch);   // Moves and draws
 			
-			if(bonus.isOverlaping(ship)){
-				applyBonus(bonus.getType());
+			if(bonus.isOverlaping(ship)){      // If ship grabs it
+				applyBonus(bonus.getType());   // Aplly the bonus
 				bonusIterator.remove();
 			}			
-			else if(bonus.isDistanceReached())
+			else if(bonus.isDistanceReached()) // Remove if they travel for long distance
 				bonusIterator.remove();
 			
 		}		
 	}
 	
 	public void applyBonus(int bonus){	
-		bonusSound.play(generalVolume);		
+		/**
+		 * Apllies bonuses depending on the bonus type 
+		 */
+		bonusSound.play(generalVolume);		  
 		score += 200;
 		if(bonus == BonusObject.BONUS_LIFE)
 			ship.addLife();
@@ -159,46 +165,57 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 
-	private void updateShoots(float delta, SpriteBatch batch){		
-		for(Shoot sh : shoots){
-			sh.update(delta, batch);
-		}
-		
+	private void updateShoots(float delta, SpriteBatch batch){	
+		/**
+		 * Moves, draws and checks collision with asteroids.
+		 * HANDLES ASTEROID DESTRUCTION AND DIVISION
+		 */
 		Iterator<Shoot> iter = shoots.iterator();
 		while(iter.hasNext()){	
 			Shoot shoot = iter.next();
-			if(asteroidCollision(shoot)){
-				destroyAsteroid(shoot);
+			shoot.update(delta, batch);  // Moves and draws
+			
+			if(asteroidCollision(shoot)){  	// If collisions with asteroid
+				destroyAsteroid(shoot);				// Destruct and divide asteroid
 				explosionSound.play(generalVolume+0.1f);
 				score += 10;
 				iter.remove();
 			}
-			else if(shoot.isDistanceReach()){
+			else if(shoot.isDistanceReach()){	// Remove if shoot travels a long distance
 				iter.remove();
 			}
 		}
 	}
 	
-	public void destroyAsteroid(GameObject object){
+	public void destroyAsteroid(Shoot shoot){
+		/**
+		 * Asteroid destruction and asteroid division 
+		 * if there is collision with shoot.
+		 * Probability of creating a random bonus.
+		 */
 		Iterator<Asteroid> asterIter = asteroids.iterator();
 		while(asterIter.hasNext()){
 			Asteroid ast = asterIter.next();
-			if(ast.getBounds().overlaps(object.getBounds())){
-				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 10* ast.getScale()/2);
-				createAsteroidDivision(ast);
-				createRandomBonus();
+			if(ast.getBounds().overlaps(shoot.getBounds())){   // If shoot collision with asteroid
+				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 10* ast.getScale()/2);  // Shake screen in relation to asteroid size
+				createAsteroidDivision(ast);     // Creates two smaller asteroids on its place.
+				createRandomBonus();			 // Probability of creating a random bonus.
 				asterIter.remove();
 				break;
 			}
 		}
 		
-		for(Asteroid astTemp : asteroidsTemporal){
+		for(Asteroid astTemp : asteroidsTemporal){   //Add to main array the asteroids recently created
 			asteroids.add(astTemp);
 		}
 		asteroidsTemporal.clear();
 	}
 	
-	private void createAsteroidDivision(Asteroid asteroid) {		
+	private void createAsteroidDivision(Asteroid asteroid) {	
+		/**
+		 * Create two smaller asteroids in the place of the father
+		 * Does not create new ones if the father is a small one.
+		 */
 		float scale = asteroid.getScale();		
 		
 		//Only create new asteroids if are NOT small.
@@ -214,24 +231,27 @@ public class AsteroidsScreen extends ScreenAdapter{
 			else scale = Asteroid.SIZE_SMALL;							//If it was medium, now it'll be small			
 
 			Vector2 direction1 = new Vector2(direction);
-			direction1.rotate(25f);
+			direction1.rotate(25f);   						// Direction won't be the same of the father
 			
 			Vector2 direction2 = new Vector2(direction);
 			direction2.rotate(335f);
 				
 			Asteroid asteroid1 = new Asteroid(this, scale, direction1.x, direction1.y);	
-			asteroid1.setPosition(position1);	
+			asteroid1.setPosition(position1);			// Create new asteroid and adjust its values
 			asteroid1.setNormalSpeed(speed);
 			asteroidsTemporal.add(asteroid1);
 			
 			Asteroid asteroid2 = new Asteroid(this, scale, direction2.x, direction2.y);
-			asteroid2.setPosition(position2);
+			asteroid2.setPosition(position2); 			// Create new asteroid and adjust its values
 			asteroid2.setNormalSpeed(speed);
 			asteroidsTemporal.add(asteroid2);
 		}	
 	}
 
-	public boolean asteroidCollision(GameObject obj){		
+	public boolean asteroidCollision(GameObject obj){
+		/**
+		 * If asteroid collisions with an object, return true
+		 */
 		Iterator<Asteroid> iter = asteroids.iterator();
 		while(iter.hasNext()){		// Asteroid rectangle  collides with   object rectangle
 			if(iter.next().getBounds().overlaps(obj.getBounds())){
@@ -242,6 +262,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void createRandomBonus(){
+		/**
+		 * Probability of creating a bonus (bonusChance)
+		 * If bonus is created, its type will be random.
+		 */
 		float r = MathUtils.random(1f);
 		if(r < bonusChance){
 			bonusObjects.add(new BonusObject(this, MathUtils.random(2)));
@@ -249,6 +273,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 		
 	public void makeShoot(){
+		/**
+		 * Creates a new shoot object, in realtion to ship position and direction.
+		 */
 		if(!isPaused){
 			if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 				shoots.add(new Shoot(ship, shootTexture));			
@@ -259,6 +286,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	private void updateAsteroids(float delta, SpriteBatch batch) {
+		/**
+		 * Moves and draws asteroids.
+		 */
 		for(Asteroid ast : asteroids){
 			ast.update(delta, batch);
 		}		
@@ -266,12 +296,19 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	
 	public void createAsteroids(int amount){
+		/**
+		 * Create the passed amount of big asteroids, and adds the to the array. 
+		 */
 		for(int i = 0; i < amount + startingAsteroids; i++){
 			asteroids.add(new Asteroid(this, Asteroid.SIZE_BIG));
 		}
 	}
 	
 	public void nextLevel(){
+		/**
+		 * Change level in +1.
+		 * Updates all necesary conditions.
+		 */
 		level++;
 		score += level*100;
 		shoots.clear();
@@ -282,6 +319,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	public void gameOver(){
+		/**
+		 * Updates hi-score
+		 * Change screen to gameOver screen.
+		 */
 		if(score >= getHiScore()) setHiScore(score);
 		game.setScreen(new GameOverScreen(this, game));
 	}
@@ -297,6 +338,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 
 	
 	public void dispose(){
+		/**
+		 * Makes all necesary disposes.
+		 */
 		shipSheet.dispose();
 		protectionTexture.dispose();
 		shootTexture.dispose();
@@ -319,6 +363,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}	
 	
 	public void newGame(){
+		/**
+		 * Create a default new game, from level 1
+		 */
 		resetObjects();
 		score = -100;
 		level = startLevel;
@@ -332,18 +379,27 @@ public class AsteroidsScreen extends ScreenAdapter{
 	}
 	
 	private void checkLevelComplete(){
+		/**
+		 * Level is complete if there are no more asteroids to destroy.
+		 * If so, pass to nextLevel.
+		 */
 		if(asteroids.isEmpty()){
 			nextLevel();
 		}
 	}
 	
 	private void checkGameOver(){
+		/**
+		 * Check collision between asteroids and ship.
+		 * If collision, destroy the ship and decrease lives
+		 * Then, if lives <= 0, gameover.
+		 */
 		if(asteroidCollision(ship)){
-			if(!ship.isRespawning()){
+			if(!ship.isRespawning()){     // Only if the ship has not the shield
 				dieSound.play(generalVolume);
 				ScreenShaker.shakeScreen(10, new Vector3(camera.position), 30f);
-				ship.destroy();
-				if(ship.getLives() <= 0){
+				ship.destroy();				// Restarts the ship and substract a life.
+				if(ship.getLives() <= 0){   // If there are no more lives, then game over.
 					gameOver();
 				}
 			}

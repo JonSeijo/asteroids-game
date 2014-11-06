@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameOverScreen extends ScreenAdapter{
 
-	private float timer;
 	private long score;
 	
 	private Texture gameOverTexture;	
@@ -31,7 +30,6 @@ public class GameOverScreen extends ScreenAdapter{
 	}
 	
 	public void render(float delta){		
-		timer += delta;	
 
 		if(Gdx.input.isKeyJustPressed(Keys.ENTER))
 			game.setScreen(mainScreen);			
