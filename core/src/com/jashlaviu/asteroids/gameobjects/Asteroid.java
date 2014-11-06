@@ -28,7 +28,7 @@ public class Asteroid{
 	private TextureRegion singleAsteroidRegion;
 	private Rectangle bounds;
 		
-	public Asteroid(AsteroidsScreen game, float scale, float directionx, float directiony){
+	public Asteroid(AsteroidsScreen game, float scale, float directionx, float directiony, float positionx, float positiony){
 		
 		singleAsteroidRegion = game.getAsteroidRegion("asteroid", MathUtils.random(1, 3));
 		
@@ -40,15 +40,13 @@ public class Asteroid{
 		wHeight = Gdx.graphics.getHeight();		
 
 
-		position.x = MathUtils.random(0, 790);
-		position.y = MathUtils.random(0, 590);
+		position.x = positionx;
+		position.y = positiony;
 		
 		direction.x = directionx;
 		direction.y = directiony;
 		direction.nor();
 		
-		//speed= 210;
-	//	speedNormal = speed = MathUtils.random(150, 200);
 		speedNormal = speed = MathUtils.random(100 + 11*game.getLevel(), 150 + 11*game.getLevel());
 		
 		bounds = new Rectangle();
@@ -68,7 +66,8 @@ public class Asteroid{
 	}
 	
 	public Asteroid(AsteroidsScreen game, float scale){
-		this(game, scale, MathUtils.random(-1f,1f), MathUtils.random(-1f,1f));
+		this(game, scale, MathUtils.random(-1f,1f), MathUtils.random(-1f,1f),
+				MathUtils.random(0, 790),  MathUtils.random(0, 590));
 	}
 	
 	public void update(float delta, SpriteBatch batch){			

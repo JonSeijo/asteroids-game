@@ -197,7 +197,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		while(asterIter.hasNext()){
 			Asteroid ast = asterIter.next();
 			if(ast.getBounds().overlaps(shoot.getBounds())){   // If shoot collision with asteroid
-				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 10* ast.getScale()/2);  // Shake screen in relation to asteroid size
+				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 11f* ast.getScale()/2);  // Shake screen in relation to asteroid size
 				createAsteroidDivision(ast);     // Creates two smaller asteroids on its place.
 				createRandomBonus();			 // Probability of creating a random bonus.
 				asterIter.remove();
@@ -236,14 +236,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 			Vector2 direction2 = new Vector2(direction);
 			direction2.rotate(335f);
 				
-			Asteroid asteroid1 = new Asteroid(this, scale, direction1.x, direction1.y);	
-			asteroid1.setPosition(position1);			// Create new asteroid and adjust its values
-			asteroid1.setNormalSpeed(speed);
+			Asteroid asteroid1 = new Asteroid(this, scale, direction1.x, direction1.y, position1.x, position1.y);	
+			asteroid1.setNormalSpeed(speed);  			// Create new asteroid and adjust its values			
 			asteroidsTemporal.add(asteroid1);
 			
-			Asteroid asteroid2 = new Asteroid(this, scale, direction2.x, direction2.y);
-			asteroid2.setPosition(position2); 			// Create new asteroid and adjust its values
-			asteroid2.setNormalSpeed(speed);
+			Asteroid asteroid2 = new Asteroid(this, scale, direction2.x, direction2.y, position2.x, position2.y);	
+			asteroid2.setNormalSpeed(speed);			// Create new asteroid and adjust its values
 			asteroidsTemporal.add(asteroid2);
 		}	
 	}
@@ -397,11 +395,12 @@ public class AsteroidsScreen extends ScreenAdapter{
 		if(asteroidCollision(ship)){
 			if(!ship.isRespawning()){     // Only if the ship has not the shield
 				dieSound.play(generalVolume);
-				ScreenShaker.shakeScreen(10, new Vector3(camera.position), 30f);
 				ship.destroy();				// Restarts the ship and substract a life.
-				if(ship.getLives() <= 0){   // If there are no more lives, then game over.
+				if(ship.getLives() <= 0)  // If there are no more lives, then game over.
 					gameOver();
-				}
+				
+				else ScreenShaker.shakeScreen(12, new Vector3(camera.position), 40f);  // Shake screen only if didn't lose
+				
 			}
 		}				
 	}
