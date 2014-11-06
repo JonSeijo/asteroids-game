@@ -31,21 +31,22 @@ public class GameOverScreen extends ScreenAdapter{
 	}
 	
 	public void render(float delta){		
-		timer += delta;
-		
-		if(timer > 2)
-			if(Gdx.input.isKeyJustPressed(Keys.ANY_KEY)){
-				game.setScreen(mainScreen);			
-			}
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+		timer += delta;	
+
+		if(Gdx.input.isKeyJustPressed(Keys.ENTER))
+			game.setScreen(mainScreen);			
+			
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();		
-		batch.draw(gameOverTexture, 70, 300);
+		batch.draw(gameOverTexture, 145, 400);
 		
-		font.setColor(0, 0, 0, 1);	
-		font.draw(batch, "SCORE: \n" + Long.toString(score), 380, 100);
-		font.draw(batch, "HISCORE: " + Long.toString(AsteroidsGame.preferences.getLong("hiscore")), 380, 70);
+		font.setColor(1, 1, 1, 1);	
+		font.draw(batch, "SCORE:   \n" + Long.toString(score), 270, 250);
+		font.draw(batch, "HI-SCORE:   " + Long.toString(AsteroidsGame.preferences.getLong("hiscore")), 430, 250);
+		
+		font.draw(batch, "<Press ENTER to restart>", 310, 50);
 		
 		batch.end();		
 	}

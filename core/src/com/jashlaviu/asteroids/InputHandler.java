@@ -7,6 +7,7 @@ import com.jashlaviu.asteroids.gameobjects.Ship;
 public class InputHandler implements InputProcessor{
 	
 	private AsteroidsScreen game;
+	private boolean isShiftPressed;
 	
 	public InputHandler(AsteroidsScreen game){
 		this.game = game;		
@@ -16,9 +17,11 @@ public class InputHandler implements InputProcessor{
 	public boolean keyDown(int keycode) {
 		Ship ship = game.getShip();
 		
-		if (keycode == Keys.SPACE)
-			game.makeShoot();	
-		
+		if (keycode == Keys.SPACE){
+			if(game.getLives() > 0)
+				game.makeShoot();	
+		}
+			
 		if(keycode == Keys.UP)
 			ship.setMoving(true);
 		
@@ -27,6 +30,12 @@ public class InputHandler implements InputProcessor{
 		
 		if(keycode == Keys.LEFT)
 			ship.setRotationSide(Ship.LEFT);
+		
+		if(keycode == Keys.SHIFT_LEFT || keycode == Keys.SHIFT_RIGHT)
+			isShiftPressed = true;
+		
+		if(keycode == Keys.R && isShiftPressed)
+			game.setHiScore(0);
 		
 		if(keycode == Keys.ESCAPE)
 			game.togglePause();
@@ -49,7 +58,10 @@ public class InputHandler implements InputProcessor{
 			ship.setRotationSide(Ship.NOTHING);	
 		
 		else if(keycode == Keys.LEFT)
-			ship.setRotationSide(Ship.NOTHING);	
+			ship.setRotationSide(Ship.NOTHING);
+		
+		if(keycode == Keys.SHIFT_LEFT || keycode == Keys.SHIFT_RIGHT)
+			isShiftPressed = false;
 		
 		return false;
 	}
