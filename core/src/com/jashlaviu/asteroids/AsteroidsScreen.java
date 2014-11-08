@@ -30,7 +30,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private int level, startLevel, startingAsteroids;
 	private long lastShootTime, nextShootTime, score;
 	private float generalVolume, bonusChance;
-	private boolean isPaused;
+	private boolean isPaused, isShooting;
 		
 	private ArrayList<Shoot> shoots;
 	private ArrayList<Asteroid> asteroids, asteroidsTemporal;
@@ -72,7 +72,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		bonusTexture = new Texture(Gdx.files.internal("data/graphic/bonus.png"));		
 		bonusRegion = new TextureRegion(bonusTexture);
 				
-		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/shoot3.wav"));
+		shootSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/laser5.wav"));
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/explosion1.wav"));
 		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
 		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
@@ -90,7 +90,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0f);
 		
 		lastShootTime = TimeUtils.millis();
-		nextShootTime = 200; //In milliseconds
+		nextShootTime = 300; //In milliseconds
 		
 		startLevel = 0;	
 		startingAsteroids = 4;		
@@ -170,6 +170,9 @@ public class AsteroidsScreen extends ScreenAdapter{
 		 * Moves, draws and checks collision with asteroids.
 		 * HANDLES ASTEROID DESTRUCTION AND DIVISION
 		 */
+		if(isShooting)
+			makeShoot();
+		
 		Iterator<Shoot> iter = shoots.iterator();
 		while(iter.hasNext()){	
 			Shoot shoot = iter.next();
@@ -488,6 +491,10 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public TextureRegion getAsteroidRegion(String name, int index){
 		return asteroidAtlas.findRegion(name, index);
+	}
+	
+	public void setShooting(boolean isShooting){
+		this.isShooting = isShooting;
 	}
 
 	

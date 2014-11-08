@@ -18,7 +18,7 @@ public class Shoot extends GameObject{
 		sprite.setRotation(ship.getRotationAngle());
 		
 		speed = 600;
-		distanceLimit = 40;
+		distanceLimit = 48;
 	}
 	
 	public void update(float delta, SpriteBatch batch){

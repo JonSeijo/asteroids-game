@@ -17,19 +17,19 @@ public class InputHandler implements InputProcessor{
 	public boolean keyDown(int keycode) {
 		Ship ship = game.getShip();
 		
-		if (keycode == Keys.SPACE){
+		if (keycode == Keys.CONTROL_LEFT){
 			if(game.getLives() > 0)
-				game.makeShoot();	
+				game.setShooting(true);	
 		}
 			
-		if(keycode == Keys.UP)
+		if(keycode == Keys.W || keycode == Keys.UP)
 			ship.setMoving(true);
 		
-		if(keycode == Keys.RIGHT)
-			ship.setRotationSide(Ship.RIGHT);		
-		
-		if(keycode == Keys.LEFT)
+		if(keycode == Keys.A || keycode == Keys.LEFT)
 			ship.setRotationSide(Ship.LEFT);
+		
+		if(keycode == Keys.D || keycode == Keys.RIGHT)
+			ship.setRotationSide(Ship.RIGHT);	
 		
 		if(keycode == Keys.SHIFT_LEFT || keycode == Keys.SHIFT_RIGHT)
 			isShiftPressed = true;
@@ -51,17 +51,21 @@ public class InputHandler implements InputProcessor{
 	public boolean keyUp(int keycode) {
 		Ship ship = game.getShip();
 		
-		if(keycode == Keys.UP)
+		if(keycode == Keys.W || keycode == Keys.UP)
 			ship.setMoving(false);
 				
-		if(keycode == Keys.RIGHT)
+		if(keycode == Keys.A || keycode == Keys.LEFT)
 			ship.setRotationSide(Ship.NOTHING);	
 		
-		else if(keycode == Keys.LEFT)
+		if(keycode == Keys.D  || keycode == Keys.RIGHT)
 			ship.setRotationSide(Ship.NOTHING);
 		
 		if(keycode == Keys.SHIFT_LEFT || keycode == Keys.SHIFT_RIGHT)
 			isShiftPressed = false;
+		
+		if (keycode == Keys.CONTROL_LEFT){
+			game.setShooting(false);	
+		}
 		
 		return false;
 	}
