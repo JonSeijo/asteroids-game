@@ -1,0 +1,17 @@
+CREDITS
+
+JAshteroids.
+
+Developed by jashlaviu
+Twitter: @jashlaviu
+Email: jashlaviu@gmail.com
+
+
+This game is a remake of the classic game "Asteroids" (1979) released in Atari.
+
+
+Sound: Made in Bfxr
+http://www.bfxr.net/
+
+Laser shoot.
+Is a modified version of "laser5", in Digital SFX set by Kenney Vleugels (www.kenney.nl)
