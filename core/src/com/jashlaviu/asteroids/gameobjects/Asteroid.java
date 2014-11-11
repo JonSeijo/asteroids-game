@@ -12,7 +12,7 @@ import com.jashlaviu.asteroids.bonus.BonusObject;
 
 public class Asteroid{
 	
-	public static final float SIZE_BIG = 2.2f; 
+	public static final float SIZE_BIG = 2f; 
 	public static final float SIZE_MEDIUM = 1f; 
 	public static final float SIZE_SMALL = 0.6f; 
 	
@@ -29,8 +29,7 @@ public class Asteroid{
 	private Rectangle bounds;
 		
 	public Asteroid(AsteroidsScreen game, float scale, float directionx, float directiony, float positionx, float positiony){
-		
-		singleAsteroidRegion = game.getAsteroidRegion("asteroid", MathUtils.random(1, 3));
+		singleAsteroidRegion = game.getAsteroidRegion("asteroid",MathUtils.random(1, 3));
 		
 		sprite = new Sprite(singleAsteroidRegion);		
 		position = new Vector2();

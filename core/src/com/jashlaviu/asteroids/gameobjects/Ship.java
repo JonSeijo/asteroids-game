@@ -105,7 +105,7 @@ public class Ship extends GameObject{
 		
 		if(moving){
 			accelSound.play(0.1f);
-			if(accel <= 200) accel += 40;	
+			if(accel <= 200) accel += 20;	
 			if(speed <= 350) speed += accel * delta;
 			
 			sprite.setRegion(currentShipFrame);

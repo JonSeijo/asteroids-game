@@ -13,7 +13,7 @@ public class AsteroidsGame extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		preferences = Gdx.app.getPreferences("jashlaviu.asteroids.preferences");
-		this.setScreen(new AsteroidsScreen(this));
+		this.setScreen(new StartScreen(this));
 	}
 
 	@Override

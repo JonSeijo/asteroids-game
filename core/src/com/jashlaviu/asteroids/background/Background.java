@@ -24,7 +24,7 @@ public class Background {
 		speed = 50;
 		
 		Vector2 starDirection = new Vector2(MathUtils.random(-1f,1f), MathUtils.random(-1f,1f));		
-		int starAmount = 100;
+		int starAmount = 150;
 		for(int i = 0; i < starAmount; i++){
 			stars.add(new Star(starTex, starDirection, speed));
 		}

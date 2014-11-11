@@ -97,7 +97,6 @@ public class AsteroidsScreen extends ScreenAdapter{
 		
 		generalVolume = 0.3f;	
 		bonusChance = 0.04f;
-	//	bonusChance = 1f;
 		
 		shapeR = new ShapeRenderer();
 	}
@@ -118,6 +117,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 			gui.update(delta, game.batch);			// Render hearts, score and gui stuff.
 			
 			game.batch.end();	
+			
+//			drawBounds();
 			
 			checkGameOver();			// Handles asteroid collision with ship. Checks if gameover (lives <= 0)
 			checkLevelComplete();		// Checks if all asteroids are destroyed, and pass to next level.
@@ -281,7 +282,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 				shoots.add(new Shoot(ship, shootTexture));			
 				lastShootTime = TimeUtils.millis();
-				shootSound.play(generalVolume);
+				shootSound.play(generalVolume+0.2f);
 			}
 		}
 	}
