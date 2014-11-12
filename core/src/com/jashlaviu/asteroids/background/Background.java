@@ -18,15 +18,15 @@ public class Background {
 	
 	private ArrayList<Star> stars;	
 		
-	public Background(Texture starTex){			
+	public Background(Texture starTex, Texture star2Tex){			
 		stars = new ArrayList<Star>();
 		
-		speed = 50;
+		speed = 30;
 		
 		Vector2 starDirection = new Vector2(MathUtils.random(-1f,1f), MathUtils.random(-1f,1f));		
-		int starAmount = 150;
+		int starAmount = 220;
 		for(int i = 0; i < starAmount; i++){
-			stars.add(new Star(starTex, starDirection, speed));
+			stars.add(new Star((MathUtils.random(100) < 70 ? starTex : star2Tex), starDirection, speed));
 		}
 	}
 	

@@ -22,6 +22,7 @@ public class Star{
 		
 		randomGen = new Random();		
 		scale = (float) ((randomGen.nextGaussian() + 1f) * 0.6f);
+//		scale = (float) (MathUtils.random(0.2f, 1.4f));
 			
 		position = new Vector2(MathUtils.random(0, 795), MathUtils.random(0, 595));
 	}

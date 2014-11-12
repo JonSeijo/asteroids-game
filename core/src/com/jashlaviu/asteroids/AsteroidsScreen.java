@@ -42,7 +42,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 	private Background background;
 	
 	private Texture shipSheet, shootTexture, asteroidsSheet, bonusTexture, gameOverTexture;
-	private Texture starBack, protectionTexture, pausedTexture;
+	private Texture starBack, star2Back, protectionTexture, pausedTexture;
 	private TextureAtlas destructionAtlas, asteroidAtlas;
 	
 	private TextureRegion bonusRegion;
@@ -62,6 +62,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		shipSheet = new Texture(Gdx.files.internal("data/graphic/shipSheet2.png"));
 		protectionTexture = new Texture(Gdx.files.internal("data/graphic/protection.png"));
 		starBack = new Texture(Gdx.files.internal("data/graphic/star.png"));
+		star2Back = new Texture(Gdx.files.internal("data/graphic/star2.png"));
 		pausedTexture = new Texture(Gdx.files.internal("data/graphic/paused.png"));		
 		gameOverTexture = new Texture(Gdx.files.internal("data/graphic/gameOver.png"));
 		
@@ -84,7 +85,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		asteroidsTemporal = new ArrayList<Asteroid>();
 		bonusObjects = new ArrayList<BonusObject>();
 		gui = new Gui(this);		
-		background = new Background(starBack);
+		background = new Background(starBack, star2Back);
 		
 		camera = new OrthographicCamera(800, 600);
 		camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0f);
@@ -92,7 +93,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 300; //In milliseconds
 		
-		startLevel = 0;	
+		startLevel = 4;	
 		startingAsteroids = 4;		
 		
 		generalVolume = 0.3f;	
@@ -201,7 +202,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 		while(asterIter.hasNext()){
 			Asteroid ast = asterIter.next();
 			if(ast.getBounds().overlaps(shoot.getBounds())){   // If shoot collision with asteroid
-				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 11f* ast.getScale()/2);  // Shake screen in relation to asteroid size
+				ScreenShaker.shakeScreen(4, new Vector3(camera.position), 10f* ast.getScale()/2);  // Shake screen in relation to asteroid size
+				
 				createAsteroidDivision(ast);     // Creates two smaller asteroids on its place.
 				createRandomBonus();			 // Probability of creating a random bonus.
 				asterIter.remove();
