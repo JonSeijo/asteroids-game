@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.jashlaviu.asteroids.AsteroidsGame;
 import com.jashlaviu.asteroids.AsteroidsScreen;
 import com.jashlaviu.asteroids.bonus.BonusObject;
 
@@ -104,7 +105,7 @@ public class Ship extends GameObject{
 		crossScreenUpdate();
 		
 		if(moving){
-			accelSound.play(0.1f);
+			accelSound.play(0.1f * AsteroidsGame.sMute);
 			if(accel <= 200) accel += 20;	
 			if(speed <= 350) speed += accel * delta;
 			

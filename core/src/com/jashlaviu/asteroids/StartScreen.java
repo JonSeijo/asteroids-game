@@ -36,8 +36,7 @@ public class StartScreen implements Screen {
 
 	@Override
 	public void show() {
-		background = new Texture(Gdx.files.internal("data/graphic/start.png"));
-
+		background = new Texture(Gdx.files.internal("data/graphic/start2.png"));
 	}
 
 	@Override

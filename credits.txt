@@ -6,12 +6,15 @@ Developed by jashlaviu
 Twitter: @jashlaviu
 Email: jashlaviu@gmail.com
 
-
 This game is a remake of the classic game "Asteroids" (1979) released in Atari.
 
 
 Sound: Made in Bfxr
 http://www.bfxr.net/
+
+"Space Fighter Loop" - Kevin MacLeod (incompetech.com) 
+Licensed under Creative Commons: By Attribution 3.0
+http://creativecommons.org/licenses/by/3.0/
 
 Laser shoot.
 Is a modified version of "laser5", in Digital SFX set by Kenney Vleugels (www.kenney.nl)

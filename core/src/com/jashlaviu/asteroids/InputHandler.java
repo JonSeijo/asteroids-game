@@ -17,7 +17,7 @@ public class InputHandler implements InputProcessor{
 	public boolean keyDown(int keycode) {
 		Ship ship = game.getShip();
 		
-		if (keycode == Keys.CONTROL_LEFT){
+		if (keycode == Keys.CONTROL_LEFT || keycode == Keys.CONTROL_RIGHT){
 			if(game.getLives() > 0)
 				game.setShooting(true);	
 		}
@@ -60,10 +60,19 @@ public class InputHandler implements InputProcessor{
 		if(keycode == Keys.D  || keycode == Keys.RIGHT)
 			ship.setRotationSide(Ship.NOTHING);
 		
+		if(keycode == Keys.M){
+			AsteroidsGame.toggleMusicMute();
+			AsteroidsGame.backMusic.setVolume(0.3f * AsteroidsGame.mMute);
+		}
+		
+		if(keycode == Keys.N){
+			AsteroidsGame.toggleSoundMute();
+		}
+		
 		if(keycode == Keys.SHIFT_LEFT || keycode == Keys.SHIFT_RIGHT)
 			isShiftPressed = false;
 		
-		if (keycode == Keys.CONTROL_LEFT){
+		if (keycode == Keys.CONTROL_LEFT || keycode == Keys.CONTROL_RIGHT){
 			game.setShooting(false);	
 		}
 		

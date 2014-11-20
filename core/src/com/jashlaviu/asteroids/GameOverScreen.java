@@ -27,12 +27,17 @@ public class GameOverScreen extends ScreenAdapter{
 		
 		score = mainScreen.getScore();		
 		gameOverTexture = mainScreen.getGameOverTexture();
+		
+		AsteroidsGame.backMusic.stop();
 	}
 	
 	public void render(float delta){		
 
-		if(Gdx.input.isKeyJustPressed(Keys.ENTER))
+		if(Gdx.input.isKeyJustPressed(Keys.ENTER)){
+			AsteroidsGame.backMusic.play();
+			AsteroidsGame.backMusic.setVolume(0.3f * AsteroidsGame.mMute);
 			game.setScreen(mainScreen);			
+		}
 			
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

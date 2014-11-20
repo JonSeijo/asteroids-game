@@ -78,6 +78,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		dieSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/die2.wav"));
 		levelSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/levelup.wav"));
 		bonusSound = Gdx.audio.newSound(Gdx.files.internal("data/sound/bonus.wav"));
+
 		
 		ship = new Ship(this, shipSheet, protectionTexture);		
 		shoots = new ArrayList<Shoot>();
@@ -93,13 +94,14 @@ public class AsteroidsScreen extends ScreenAdapter{
 		lastShootTime = TimeUtils.millis();
 		nextShootTime = 300; //In milliseconds
 		
-		startLevel = 4;	
+		startLevel = 0;	
 		startingAsteroids = 4;		
 		
-		generalVolume = 0.3f;	
+		generalVolume = 0.5f;	
 		bonusChance = 0.04f;
 		
 		shapeR = new ShapeRenderer();
+		AsteroidsGame.backMusic.play();
 	}
 	
 	public void render(float delta){		
@@ -154,7 +156,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		/**
 		 * Apllies bonuses depending on the bonus type 
 		 */
-		bonusSound.play(generalVolume);		  
+		bonusSound.play(generalVolume * AsteroidsGame.sMute);		  
 		score += 200;
 		if(bonus == BonusObject.BONUS_LIFE)
 			ship.addLife();
@@ -182,7 +184,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			
 			if(asteroidCollision(shoot)){  	// If collisions with asteroid
 				destroyAsteroid(shoot);				// Destruct and divide asteroid
-				explosionSound.play(generalVolume+0.1f);
+				explosionSound.play((generalVolume+0.1f)  * AsteroidsGame.sMute);
 				score += 10;
 				iter.remove();
 			}
@@ -284,7 +286,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 			if((TimeUtils.timeSinceMillis(getLastShootTime())) > nextShootTime){ //If 300 milliseconds passed since last shoot, shoot again
 				shoots.add(new Shoot(ship, shootTexture));			
 				lastShootTime = TimeUtils.millis();
-				shootSound.play(generalVolume+0.2f);
+				shootSound.play((generalVolume+0.2f) * AsteroidsGame.sMute);
 			}
 		}
 	}
@@ -319,7 +321,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		createAsteroids(level);
 		ship.addLife();
 		ship.restartShip();			
-		levelSound.play(generalVolume);
+		levelSound.play(generalVolume * AsteroidsGame.sMute);
 	}
 	
 	public void gameOver(){
@@ -400,7 +402,7 @@ public class AsteroidsScreen extends ScreenAdapter{
 		 */
 		if(asteroidCollision(ship)){
 			if(!ship.isRespawning()){     // Only if the ship has not the shield
-				dieSound.play(generalVolume);
+				dieSound.play(generalVolume * AsteroidsGame.sMute);
 				ship.destroy();				// Restarts the ship and substract a life.
 				if(ship.getLives() <= 0)  // If there are no more lives, then game over.
 					gameOver();
@@ -446,6 +448,8 @@ public class AsteroidsScreen extends ScreenAdapter{
 	
 	public void togglePause(){
 		isPaused = !isPaused;
+		if(isPaused) AsteroidsGame.backMusic.setVolume(0);
+		else AsteroidsGame.backMusic.setVolume(0.3f);			
 	}
 
 	public long getLastShootTime() {
